@@ -11,7 +11,7 @@ An AI-powered clinical decision support tool for evidence-based PCI vs. CABG rec
 | Field | Value |
 |---|---|
 | Username | `admin` |
-| Password | `gatechatl` |
+| Password | `gatech` |
 
 Upload any cardiac catheterization or CCTA report (PDF) to see a guideline-grounded recommendation in seconds.
 
