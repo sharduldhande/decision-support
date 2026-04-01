@@ -1,0 +1,19 @@
+# Virtual environment
+.venv/
+
+# IDE
+.idea/
+.DS_Store
+
+# Database
+chroma_db/
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# R
+.Rhistory
