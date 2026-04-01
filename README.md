@@ -1,4 +1,4 @@
-> *TThis is a demo and should not be used for real world  decision making.*
+> *This is a demo and should not be used for real world  decision making.*
 
 An AI-powered clinical decision support tool for evidence-based PCI vs. CABG recommendations, grounded in the **2021 ACC/AHA/SCAI Coronary Revascularization Guidelines**.
 
