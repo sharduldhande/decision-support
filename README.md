@@ -13,7 +13,7 @@ An AI-powered clinical decision support tool for evidence-based PCI vs. CABG rec
 | Username | `admin` |
 | Password | `gatech` |
 
-Upload any cardiac catheterization or CCTA report (PDF) to see a guideline-grounded recommendation in seconds.
+Upload any ICA or CCTA report (PDF) to see a guideline-grounded recommendation in seconds.
 
 ---
 
@@ -34,32 +34,16 @@ Recommendations are grounded in the actual guideline text — not general medica
 ## How It Works
 
 ```
-PDF Report (cath/CCTA)
-        │
-        ▼
-Gemini 2.5 Pro ──► Structured JSON extraction
-(extraction)        (anatomy, stenosis %, comorbidities)
-        │
-        ▼
-PubMedBERT + ChromaDB ──► Top guideline sections retrieved
-(semantic search)          via 3-pronged query expansion
-        │
-        ▼
-Gemini 2.5 Flash ──► JSON recommendation
-(decision engine)    (strategy, confidence, citations,
-                      factors favouring PCI vs CABG)
-        │
-        ▼
-Streamlit UI ──► Formatted output with expandable
-                 citation cards and clinical rationale
-```
+Input PDF ICA/CCTA Report
+    ↓
+Extract structured JSON (anatomy, stenosis, comorbidities)
+    ↓
+PubMedBERT + ChromaDB → Retrieve relevant guideline chunks
+    ↓
+Prepare Recommendation based on Extract and JSON (strategy, confidence, PCI vs CABG)
+    ↓
+Formatted Output with Citations```
 
-### Two-Model Design
-
-| Stage | Model | Reason |
-|---|---|---|
-| Report extraction | Gemini 2.5 Pro | Highest accuracy for complex structured extraction |
-| Recommendation | Gemini 2.5 Flash | Fast inference; sufficient for constrained JSON generation |
 
 ### Three-Pronged Guideline Retrieval
 
@@ -77,7 +61,7 @@ This ensures both patient-specific and general guideline sections are surfaced.
 | Component | Technology |
 |---|---|
 | UI | Streamlit |
-| Extraction LLM | Google Gemini 2.5 Pro |
+| Extraction LLM | Google Gemini 2.5 Flash |
 | Recommendation LLM | Google Gemini 2.5 Flash |
 | Embeddings | PubMedBERT (`NeuML/pubmedbert-base-embeddings`) |
 | Vector Database | ChromaDB |
@@ -91,8 +75,6 @@ This ensures both patient-specific and general guideline sections are surfaced.
 - **RAG (Retrieval-Augmented Generation):** Guideline sections are retrieved at runtime via vector similarity search, not hard-coded rules. The system can surface any relevant section across the full guideline document.
 - **Domain-specific embeddings:** PubMedBERT, trained on biomedical literature, produces significantly more accurate embeddings for clinical text than general-purpose models.
 - **Structured extraction with schema validation:** The extraction prompt defines a 60+ field JSON schema with explicit clinical rules (e.g., how to interpret qualitative stenosis descriptors like "mild" or "severe", how to determine vessel dominance, what counts as a "significant" lesion).
-- **Deterministic output:** Temperature set to 0.2 for the recommendation step to ensure reproducibility in a clinical context.
-- **Streamlit caching:** The embedding model and vector database client are loaded once and cached across sessions using `@st.cache_resource`, avoiding repeated expensive initialization.
 - **Citation transparency:** Every recommendation includes the specific guideline section title, Class of Recommendation, Level of Evidence, and the verbatim guideline text that supports it.
 
 ---
@@ -113,7 +95,7 @@ cd your-repo-name
 
 # Create and activate a virtual environment
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
