@@ -1,4 +1,4 @@
-# Coronary Revascularization Decision Support
+> *TThis is a demo and should not be used for real world  decision making.*
 
 An AI-powered clinical decision support tool for evidence-based PCI vs. CABG recommendations, grounded in the **2021 ACC/AHA/SCAI Coronary Revascularization Guidelines**.
 
@@ -148,7 +148,3 @@ streamlit run app.py
 The 2021 ACC/AHA/SCAI guidelines provide class-of-recommendation and level-of-evidence ratings for specific anatomical and clinical scenarios. Applying these guidelines correctly requires integrating many variables simultaneously — a task well-suited to AI-assisted decision support.
 
 ---
-
-## Limitations & Disclaimer
-
-This tool is intended for **research and educational purposes only**. It is not a substitute for clinical judgment, and outputs should not be used to make patient care decisions without independent physician review. The quality of recommendations depends on the completeness and accuracy of the uploaded report.
