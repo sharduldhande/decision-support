@@ -42,7 +42,8 @@ PubMedBERT + ChromaDB → Retrieve relevant guideline chunks
     ↓
 Prepare Recommendation based on Extract and JSON (strategy, confidence, PCI vs CABG)
     ↓
-Formatted Output with Citations```
+Formatted Output with Citations
+```
 
 
 ### Three-Pronged Guideline Retrieval
