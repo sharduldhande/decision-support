@@ -55,7 +55,27 @@ def resolve_gemini_api_key():
 gemini_client = genai.Client(api_key=resolve_gemini_api_key())
 
 st.title("Coronary Intervention Decision Support")
-st.caption("Based on 2021 ACC/AHA/SCAI Guidelines")
+st.markdown(
+    '<p style="font-size:1.2rem; color:gray;">Based on <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001038" target="_blank">2021 ACC/AHA/SCAI Guidelines</a></p>',
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    'by <a href="https://www.linkedin.com/in/shardul-dhande/" target="_blank">Shardul Dhande'
+    '<img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="20" style="vertical-align: -3px; margin-left: 5px;"></a>',
+    unsafe_allow_html=True,
+)
+
+st.markdown("""
+Upload an ICA or CCTA report (PDF) and get an evidence-based 
+PCI vs. CABG recommendation grounded in ACC/AHA/SCAI guideline citations.
+
+**How it works:**  
+Upload Report → AI extracts clinical findings → AI retrieves relevant guideline sections → Generates a recommendation with verbatim citations and confidence level based on the ACA/AHS Guidelines.
+
+> ⚠️ *This is a demo tool. Not for clinical decision-making.*
+""")
+
 
 EXTRACTION_PROMPT = """Extract clinical findings from this cardiac catheterization or CCTA report.
 Return ONLY valid JSON, no markdown backticks, matching this exact schema:
@@ -371,8 +391,20 @@ def render_decision(decision):
                 st.markdown(f"**Patient Relevance:** {cite.get('patient_relevance', '')}")
 
 
+st.markdown(
+    "<style>div[data-testid='stFileUploader'] label p {font-size: 1.4rem;}</style>",
+    unsafe_allow_html=True,
+)
 
-uploaded_file = st.file_uploader("Upload ICA/CCTA Report (PDF)", type="pdf")
+with open("sample_angiogram.pdf", "rb") as f:
+    st.download_button(
+        label="Download sample angiogram report for testing",
+        data=f,
+        file_name="sample_angiogram.pdf",
+        mime="application/pdf",
+    )
+
+uploaded_file = st.file_uploader("Upload Coronary Angiogram (ICA/CCTA) Report (PDF)", type="pdf")
 
 if uploaded_file:
     pdf_bytes = uploaded_file.read()
@@ -382,8 +414,8 @@ if uploaded_file:
 
     with st.spinner(text="Extracting clinical findings..."):
         response = gemini_client.models.generate_content(
-            model="gemini-2.5-pro",
-            # model="gemini-2.5-flash",
+            # model="gemini-2.5-pro",
+            model="gemini-2.5-flash",
             contents=[message],
         )
 
