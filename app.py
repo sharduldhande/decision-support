@@ -54,6 +54,27 @@ def resolve_gemini_api_key():
 
 gemini_client = genai.Client(api_key=resolve_gemini_api_key())
 
+
+st.set_page_config(
+    page_title="Decision Support",
+    page_icon="🫀",
+    layout="centered",
+)
+
+
+
+st.markdown("""
+<style>
+    .block-container {
+        max-width: 720px;
+        padding-top: 2rem;
+    }
+    h1 {
+        margin-bottom: 0.2rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("Coronary Intervention Decision Support")
 st.markdown(
     '<p style="font-size:1.2rem; color:gray;">Based on <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001038" target="_blank">2021 ACC/AHA/SCAI Guidelines</a></p>',
@@ -69,12 +90,16 @@ st.markdown(
 st.markdown("""
 Upload an ICA or CCTA report (PDF) and get an evidence-based 
 PCI vs. CABG recommendation grounded in ACC/AHA/SCAI guideline citations.
-
-**How it works:**  
-Upload Report → AI extracts clinical findings → AI retrieves relevant guideline sections → Generates a recommendation with verbatim citations and confidence level based on the ACA/AHS Guidelines.
-
-> ⚠️ *This is a demo tool. Not for clinical decision-making.*
 """)
+
+st.markdown("""
+**How it works:**  
+1. 📄 Upload an ICA or CCTA report  
+2. 🔍 AI extracts clinical findings  
+3. 📚 Retrieves relevant ACC/AHA guideline sections  
+4. ✅ Generates recommendation with verbatim citations and confidence level
+""")
+st.warning("This is a demo tool for educational purposes only. Do not use for clinical decision-making.", icon="⚠️")
 
 
 EXTRACTION_PROMPT = """Extract clinical findings from this cardiac catheterization or CCTA report.
@@ -404,7 +429,10 @@ with open("sample_angiogram.pdf", "rb") as f:
         mime="application/pdf",
     )
 
-uploaded_file = st.file_uploader("Upload Coronary Angiogram (ICA/CCTA) Report (PDF)", type="pdf")
+st.divider()
+
+
+uploaded_file = st.file_uploader("Upload Coronary Angiogram (ICA/CCTA) Report To Get Started", type="pdf")
 
 if uploaded_file:
     pdf_bytes = uploaded_file.read()
@@ -412,11 +440,13 @@ if uploaded_file:
     prompt_part = types.Part.from_text(text=EXTRACTION_PROMPT)
     message = types.Content(role="user", parts=[pdf_part, prompt_part])
 
-    with st.spinner(text="Extracting clinical findings..."):
+    with st.spinner(text="Extracting clinical findings... Please wait 5 to 10 seconds."):
         response = gemini_client.models.generate_content(
-            # model="gemini-2.5-pro",
             model="gemini-2.5-flash",
             contents=[message],
+            config=types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
+            ),
         )
 
     try:
@@ -445,10 +475,9 @@ if uploaded_file:
                 seen_titles.add(s["title"])
                 all_sections.append(s)
 
-    with st.spinner("Generating guideline-based recommendation..."):
+    with st.spinner("Generating guideline-based recommendation... Please wait 5 to 10 seconds."):
         decision_prompt = build_decision_prompt(findings, all_sections)
         decision_response = gemini_client.models.generate_content(
-            # model="gemini-2.5-pro",
             model="gemini-2.5-flash",
             contents=[
                 types.Content(role="user", parts=[
