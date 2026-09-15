@@ -8,7 +8,9 @@ An AI-powered clinical decision support tool for evidence-based PCI vs. CABG rec
 
 ## Live Demo
 
-**URL:** [decisionsupport.sharduldhande.com](https://decisionsupport.sharduldhande.com)
+**Project page:** [decisionsupport.sharduldhande.com](https://decisionsupport.sharduldhande.com)
+
+**App:** [app.decisionsupport.sharduldhande.com](https://app.decisionsupport.sharduldhande.com) (password-protected only to prevent Gemini API abuse)
 
 | Field | Value |
 |---|---|
