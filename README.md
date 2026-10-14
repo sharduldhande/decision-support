@@ -10,13 +10,6 @@ An AI-powered clinical decision support tool for evidence-based PCI vs. CABG rec
 
 **Project page:** [decisionsupport.sharduldhande.com](https://decisionsupport.sharduldhande.com)
 
-**App:** [app.decisionsupport.sharduldhande.com](https://app.decisionsupport.sharduldhande.com) (password-protected only to prevent Gemini API abuse)
-
-| Field | Value |
-|---|---|
-| Username | `admin` |
-| Password | `gatech` |
-
 Upload any ICA or CCTA report (PDF) to see a guideline-grounded recommendation in seconds.
 
 ---
@@ -66,8 +59,8 @@ This ensures both patient-specific and general guideline sections are surfaced.
 | Component | Technology |
 |---|---|
 | UI | Streamlit |
-| Extraction LLM | Google Gemini 2.5 Flash |
-| Recommendation LLM | Google Gemini 2.5 Flash |
+| Extraction LLM | Google Gemini 3.8 Flash |
+| Recommendation LLM | Google Gemini 3.8 Flash |
 | Embeddings | PubMedBERT (`NeuML/pubmedbert-base-embeddings`) |
 | Vector Database | ChromaDB |
 | Guideline Source | 2021 ACC/AHA/SCAI Coronary Revascularization Guidelines |

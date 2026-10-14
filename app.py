@@ -22,6 +22,7 @@ embed_model = load_embed_model()
 collection = load_chroma()
 
 DEFAULT_GEMINI_API_KEY = None
+GEMINI_MODEL = "gemini-3.8-flash"
 
 
 def resolve_gemini_api_key():
@@ -442,7 +443,7 @@ if uploaded_file:
 
     with st.spinner(text="Extracting clinical findings... Please wait 5 to 10 seconds."):
         response = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=GEMINI_MODEL,
             contents=[message],
             config=types.GenerateContentConfig(
                 thinking_config=types.ThinkingConfig(thinking_budget=0),
@@ -478,7 +479,7 @@ if uploaded_file:
     with st.spinner("Generating guideline-based recommendation... Please wait 5 to 10 seconds."):
         decision_prompt = build_decision_prompt(findings, all_sections)
         decision_response = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=GEMINI_MODEL,
             contents=[
                 types.Content(role="user", parts=[
                     types.Part.from_text(text=decision_prompt)
