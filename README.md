@@ -59,8 +59,8 @@ This ensures both patient-specific and general guideline sections are surfaced.
 | Component | Technology |
 |---|---|
 | UI | Streamlit |
-| Extraction LLM | Google Gemini 3.8 Flash |
-| Recommendation LLM | Google Gemini 3.8 Flash |
+| Extraction LLM | Google Gemini 3.5 Flash |
+| Recommendation LLM | Google Gemini 3.5 Flash |
 | Embeddings | PubMedBERT (`NeuML/pubmedbert-base-embeddings`) |
 | Vector Database | ChromaDB |
 | Guideline Source | 2021 ACC/AHA/SCAI Coronary Revascularization Guidelines |

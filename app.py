@@ -22,7 +22,7 @@ embed_model = load_embed_model()
 collection = load_chroma()
 
 DEFAULT_GEMINI_API_KEY = None
-GEMINI_MODEL = "gemini-3.8-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 
 
 def resolve_gemini_api_key():
