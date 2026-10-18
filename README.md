@@ -20,8 +20,8 @@ Choosing between percutaneous coronary intervention (PCI) and coronary artery by
 
 This tool automates that reasoning. A cardiologist uploads a cath lab or CCTA report, and the system:
 
-1. **Extracts** structured clinical findings from the PDF using a large language model
-2. **Retrieves** the most relevant ACC/AHA guideline sections via semantic search
+1. **Extracts** structured clinical findings from the PDF (scans included) with Claude, into a validated Pydantic schema
+2. **Retrieves** the most relevant ACC/AHA guideline text and graded recommendations via semantic search
 3. **Generates** a recommendation (PCI, CABG, or medical management) with guideline citations, confidence level, and a breakdown of factors favoring each approach
 
 Recommendations are grounded in the actual guideline text — not general medical knowledge — which reduces the risk of hallucination and ensures every recommendation is traceable to a specific Class/Level-of-Evidence statement.
@@ -31,26 +31,29 @@ Recommendations are grounded in the actual guideline text — not general medica
 ## How It Works
 
 ```
-Input PDF ICA/CCTA Report
+Input PDF ICA/CCTA report
     ↓
-Extract structured JSON (anatomy, stenosis, comorbidities)
+Extract   Claude + Pydantic schema → findings; lesion severity computed in code
     ↓
-PubMedBERT + ChromaDB → Retrieve relevant guideline chunks
+Scope     STEMI, posterior MI, stable and non-coronary reports are declined
     ↓
-Prepare Recommendation based on Extract and JSON (strategy, confidence, PCI vs CABG)
+Retrieve  PubMedBERT + ChromaDB → guideline chunks and graded recommendations
     ↓
-Formatted Output with Citations
+Decide    Claude + Pydantic schema → strategy, confidence, factors, COR/LOE citations
+    ↓
+Stream    FastAPI streams each stage, then the result, to the web page
 ```
 
 
-### Three-Pronged Guideline Retrieval
+### Guideline Retrieval
 
-For each case, three distinct queries are issued to ChromaDB and the results are merged:
-1. A summary of the clinical findings
+For each case, several queries are issued to ChromaDB and the results are merged and de-duplicated:
+1. A summary of the lesions and clinical context
 2. A disease-specific query (e.g., *"NSTEMI revascularization 2-vessel disease"*)
-3. A generic decision query (e.g., *"PCI versus CABG multivessel coronary artery disease"*)
+3. A generic decision query (*"PCI versus CABG multivessel coronary artery disease"*)
+4. A physiology query (FFR/iFR) when intermediate lesions are present
 
-This ensures both patient-specific and general guideline sections are surfaced.
+The guideline's recommendation tables are images in the source EPUB, so `transcribe.py` reads them once with Claude vision into `guideline_recommendations.json` (135 recommendations with Class of Recommendation and Level of Evidence), which `ingest.py` indexes alongside the guideline text.
 
 ---
 
@@ -58,13 +61,14 @@ This ensures both patient-specific and general guideline sections are surfaced.
 
 | Component | Technology |
 |---|---|
-| UI | Streamlit |
-| Extraction LLM | Google Gemini 3.5 Flash |
-| Recommendation LLM | Google Gemini 3.5 Flash |
+| Front end | Static page on Cloudflare Pages ([decision-support-site](https://github.com/sharduldhande/decision-support-site)), Cloudflare Turnstile |
+| API | FastAPI (streaming NDJSON) |
+| LLM | Claude Haiku 5.5 (extraction and recommendation), Claude Sonnet 5.5 (one-time table transcription) |
+| Orchestration | LangChain (structured output, retrievers, LCEL), LangSmith tracing |
 | Embeddings | PubMedBERT (`NeuML/pubmedbert-base-embeddings`) |
 | Vector Database | ChromaDB |
 | Guideline Source | 2021 ACC/AHA/SCAI Coronary Revascularization Guidelines |
-| Runtime | Python 3.13 |
+| Runtime | Python 3.12+ |
 
 ---
 
@@ -72,7 +76,7 @@ This ensures both patient-specific and general guideline sections are surfaced.
 
 - **RAG (Retrieval-Augmented Generation):** Guideline sections are retrieved at runtime via vector similarity search, not hard-coded rules. The system can surface any relevant section across the full guideline document.
 - **Domain-specific embeddings:** PubMedBERT, trained on biomedical literature, produces significantly more accurate embeddings for clinical text than general-purpose models.
-- **Structured extraction with schema validation:** The extraction prompt defines a 60+ field JSON schema with explicit clinical rules (e.g., how to interpret qualitative stenosis descriptors like "mild" or "severe", how to determine vessel dominance, what counts as a "significant" lesion).
+- **Structured extraction with schema validation:** Pydantic classes define the 60+ field findings schema; the model fills what the report states, and code derives lesion severity (significant ≥70%, ≥50% left main; intermediate 40–69%) and the significant-vessel count from the guideline's thresholds.
 - **Citation transparency:** Every recommendation includes the specific guideline section title, Class of Recommendation, Level of Evidence, and the verbatim guideline text that supports it.
 
 ---
@@ -82,7 +86,8 @@ This ensures both patient-specific and general guideline sections are surfaced.
 ### Prerequisites
 
 - Python 3.10+
-- A [Google AI Studio](https://aistudio.google.com) API key (free tier works)
+- An [Anthropic API](https://platform.claude.com) key
+- A [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) widget (for the public API)
 
 ### Installation
 
@@ -101,8 +106,15 @@ pip install -r requirements.txt
 
 ### Configuration
 
+Create a `.env` file (git-ignored):
+
 ```bash
-export GEMINI_API_KEY=your_api_key_here
+ANTHROPIC_API_KEY=...
+TURNSTILE_SECRET=...
+# optional LangSmith tracing
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=...
+LANGSMITH_PROJECT=decision-support-dev
 ```
 
 ### First-Time Setup
@@ -113,21 +125,27 @@ Ingest the ACC/AHA guidelines into the vector database (run once):
 python ingest.py
 ```
 
-This parses the guideline EPUB, splits it into sections, embeds each section with PubMedBERT, and stores them in ChromaDB.
+This parses the guideline EPUB, splits it into ≤400-token chunks, adds the transcribed recommendations, embeds everything with PubMedBERT and stores it in ChromaDB.
 
 ### Run the App
 
 ```bash
-streamlit run app.py
+uvicorn app:app --port 8501
 ```
+
+`POST /analyze` takes a PDF and a Turnstile token and streams progress stages followed by the result.
 
 ---
 
 ## Project Structure
 
 ```
-├── app.py                    # Streamlit app + full AI pipeline
-├── ingest.py                 # One-time guideline ingestion script
+├── app.py                    # FastAPI: /analyze (Turnstile, limits, streaming)
+├── pipeline.py               # LangChain pipeline: extract → retrieve → decide
+├── schemas.py                # Pydantic schemas for findings and decisions
+├── ingest.py                 # Guideline ingestion script
+├── transcribe.py             # One-time transcription of recommendation tables
+├── guideline_recommendations.json  # Transcribed recommendations (COR/LOE)
 ├── requirements.txt          # Python dependencies
 ├── ACC_AHA_Guidelines.epub   # Source guideline document
 └── chroma_db/                # Persistent vector database (created by ingest.py)
