@@ -61,7 +61,7 @@ The guideline's recommendation tables are images in the source EPUB, so `transcr
 
 | Component | Technology |
 |---|---|
-| Front end | Static page on Cloudflare Pages ([decision-support-site](https://github.com/sharduldhande/decision-support-site)), Cloudflare Turnstile |
+| Front end | Static web page, Cloudflare Turnstile |
 | API | FastAPI (streaming NDJSON) |
 | LLM | Claude Haiku 5.5 (extraction and recommendation), Claude Sonnet 5.5 (one-time table transcription) |
 | Orchestration | LangChain (structured output, retrievers, LCEL), LangSmith tracing |
