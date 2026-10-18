@@ -1,509 +1,109 @@
-import streamlit as st
-import google.genai as genai
-from google.genai import types
 import json
+import logging
 import os
-from sentence_transformers import SentenceTransformer
-import chromadb
+import time
+from collections import defaultdict, deque
+from contextlib import asynccontextmanager
+
+import httpx
+from dotenv import load_dotenv
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+
+load_dotenv()
+
+import pipeline  # noqa: E402  (needs the API key from .env loaded first)
+
+log = logging.getLogger("decision-support")
+
+TURNSTILE_SECRET = os.environ.get("TURNSTILE_SECRET", "")
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+TURNSTILE_ACTION = "analyze"
+TURNSTILE_HOSTNAMES = set(os.environ.get("TURNSTILE_HOSTNAMES", "decisionsupport.sharduldhande.com").split(","))
+ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "https://decisionsupport.sharduldhande.com").split(",")
+
+MAX_PDF_BYTES = 10 * 1024 * 1024
+RATE_LIMIT = 5
+RATE_WINDOW_SECONDS = 3600
+recent_requests = defaultdict(deque)
 
 
-@st.cache_resource
-def load_embed_model():
-    return SentenceTransformer("NeuML/pubmedbert-base-embeddings")
+@asynccontextmanager
+async def lifespan(app):
+    if not TURNSTILE_SECRET:
+        raise RuntimeError("TURNSTILE_SECRET is not set")
+    pipeline.get_retriever()  # load PubMedBERT now, not on the first upload
+    yield
 
 
-@st.cache_resource
-def load_chroma():
-    client = chromadb.PersistentClient(path="./chroma_db")
-    return client.get_collection("guidelines")
+app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None)
+app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_methods=["POST"], allow_headers=["*"])
 
 
-embed_model = load_embed_model()
-collection = load_chroma()
+def check_rate_limit(ip):
+    now = time.time()
+    times = recent_requests[ip]
+    while times and now - times[0] > RATE_WINDOW_SECONDS:
+        times.popleft()
+    if len(times) >= RATE_LIMIT:
+        raise HTTPException(429, f"Limit of {RATE_LIMIT} analyses per hour reached. Please try again later.")
+    times.append(now)
 
-DEFAULT_GEMINI_API_KEY = None
-GEMINI_MODEL = "gemini-3.5-flash"
 
-
-def resolve_gemini_api_key():
-    env_keys = [
-        "GEMINI_API_KEY",
-        "GOOGLE_API_KEY",
-        "GOOGLE_GENAI_API_KEY",
-    ]
-    for key_name in env_keys:
-        value = os.environ.get(key_name)
-        if value:
-            return value
-
+def verify_turnstile(token, ip):
+    if not token or len(token) > 2048:
+        raise HTTPException(403, "Verification failed. Please complete the check and try again.")
     try:
-        for key_name in env_keys:
-            if key_name in st.secrets and st.secrets[key_name]:
-                return st.secrets[key_name]
+        result = httpx.post(
+            TURNSTILE_VERIFY_URL,
+            data={"secret": TURNSTILE_SECRET, "response": token, "remoteip": ip},
+            timeout=10,
+        ).json()
+    except (httpx.HTTPError, ValueError):
+        raise HTTPException(503, "Verification service unavailable. Please try again.")
+    if not (result.get("success") and result.get("action") == TURNSTILE_ACTION
+            and result.get("hostname") in TURNSTILE_HOSTNAMES):
+        log.warning("Turnstile rejected: %s", {k: result.get(k) for k in ("error-codes", "action", "hostname")})
+        raise HTTPException(403, "Verification failed. Please complete the check and try again.")
+
+
+def ndjson(event):
+    return json.dumps(event) + "\n"
+
+
+def stream_analysis(pdf_bytes):
+    try:
+        for event in pipeline.run_steps(pdf_bytes):
+            if "result" in event:
+                r = event["result"]
+                event = {"result": {
+                    "findings": r.findings.model_dump(mode="json"),
+                    "decision": r.decision.model_dump(mode="json") if r.decision else None,
+                    "message": r.message,
+                    "note": r.note,
+                }}
+            yield ndjson(event)
     except Exception:
-        pass
+        log.exception("Analysis failed")
+        yield ndjson({"error": "Something went wrong while analysing the report. Please try again."})
 
-    if DEFAULT_GEMINI_API_KEY:
-        return DEFAULT_GEMINI_API_KEY
 
-    st.error(
-        "No Gemini API key found. Set GEMINI_API_KEY in your environment, "
-        "add it to Streamlit secrets, or set DEFAULT_GEMINI_API_KEY in app.py."
-    )
-    st.stop()
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
-gemini_client = genai.Client(api_key=resolve_gemini_api_key())
+@app.post("/analyze")
+def analyze(request: Request, file: UploadFile = File(...), token: str = Form("")):
+    ip = request.client.host
+    verify_turnstile(token, ip)
+    check_rate_limit(ip)
 
+    pdf_bytes = file.file.read(MAX_PDF_BYTES + 1)
+    if len(pdf_bytes) > MAX_PDF_BYTES:
+        raise HTTPException(413, "The PDF is larger than 10 MB.")
+    if not pdf_bytes.startswith(b"%PDF"):
+        raise HTTPException(415, "Please upload a PDF file.")
 
-st.set_page_config(
-    page_title="Decision Support",
-    page_icon="🫀",
-    layout="centered",
-)
-
-
-
-st.markdown("""
-<style>
-    .block-container {
-        max-width: 720px;
-        padding-top: 2rem;
-    }
-    h1 {
-        margin-bottom: 0.2rem;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-st.title("Coronary Intervention Decision Support")
-st.markdown(
-    '<p style="font-size:1.2rem; color:gray;">Based on <a href="https://www.ahajournals.org/doi/10.1161/CIR.0000000000001038" target="_blank">2021 ACC/AHA/SCAI Guidelines</a></p>',
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    'by <a href="https://www.linkedin.com/in/shardul-dhande/" target="_blank">Shardul Dhande'
-    '<img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="20" style="vertical-align: -3px; margin-left: 5px;"></a>',
-    unsafe_allow_html=True,
-)
-
-st.markdown("""
-Upload an ICA or CCTA report (PDF) and get an evidence-based 
-PCI vs. CABG recommendation grounded in ACC/AHA/SCAI guideline citations.
-""")
-
-st.markdown("""
-**How it works:**  
-1. 📄 Upload an ICA or CCTA report  
-2. 🔍 AI extracts clinical findings  
-3. 📚 Retrieves relevant ACC/AHA guideline sections  
-4. ✅ Generates recommendation with verbatim citations and confidence level
-""")
-st.warning("This is a demo tool for educational purposes only. Do not use for clinical decision-making.", icon="⚠️")
-
-
-EXTRACTION_PROMPT = """Extract clinical findings from this cardiac catheterization or CCTA report.
-Return ONLY valid JSON, no markdown backticks, matching this exact schema:
-
-{
-  "clinical_context": {
-    "comorbidities": [],
-    "cardiac_diagnosis": null,
-    "valvular_disease": null,
-    "rhythm": null,
-    "lv_function": null
-  },
-  "coronary_anatomy": {
-    "dominance": "right | left | codominant | unknown",
-    "left_main": {
-      "ostial":   { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "mid":      { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "distal":   { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false }
-    },
-    "lad": {
-      "proximal": { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "mid":      { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "distal":   { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false }
-    },
-    "lcx": {
-      "dominant": false,
-      "proximal": { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "mid":      { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "distal":   { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false }
-    },
-    "rca": {
-      "dominant": false,
-      "proximal": { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "mid":      { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "distal":   { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false }
-    },
-    "branches": {
-      "diagonal_1": { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "diagonal_2": { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "om_1":       { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "om_2":       { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "ramus":      { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "pda":        { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false },
-      "plb":        { "stenosis_pct": null, "stenosis_qualifier": "not_described", "significant": false }
-    }
-  },
-  "angiographic_diagnosis": {
-    "summary": null,
-    "vessel_disease_count": null,
-    "significant_lesions": []
-  }
-}
-
-FIELD RULES:
-
-stenosis_pct:
-  - Array of integers when a percentage is stated: [30] for a single value, [30, 40] for a range like "30-40%"
-  - null if no percentage is mentioned (use stenosis_qualifier to capture qualitative descriptions instead)
-
-stenosis_qualifier:
-  - Must be one of: "normal", "mild", "mild_plaque", "moderate", "severe", "total_occlusion", "not_described"
-  - Use "not_described" only when a percentage is given without a qualitative description
-  - Use "normal" when the report explicitly states normal or no disease
-
-significant:
-  - true if stenosis >= 70% for any vessel, or >= 50% for left main
-  - true if the report describes total occlusion, critical stenosis, or uses the word "significant"
-  - false otherwise
-
-dominant (on lcx and rca):
-  - Set based on the dominance stated in the report
-  - Right dominant: rca.dominant = true, lcx.dominant = false
-  - Left dominant: rca.dominant = false, lcx.dominant = true
-  - Codominant: both true
-
-clinical_context:
-  - comorbidities: array of strings for non-cardiac conditions (e.g., ["HTN", "DM", "CKD"]). Empty array if none listed.
-  - cardiac_diagnosis: the primary cardiac indication for the procedure (e.g., "CAD - ACS - STEMI"). null if not stated.
-  - valvular_disease: any valvular findings mentioned (e.g., "SEVERE MR"). null if not stated.
-  - rhythm: cardiac rhythm if mentioned (e.g., "SR", "AF"). null if not stated.
-  - lv_function: LV function description if mentioned (e.g., "MILD LV DYSFUNCTION", "LVEF 35%"). null if not stated.
-
-angiographic_diagnosis:
-  - summary: the final diagnosis line from the report (e.g., "CAD - DVD", "CAD - TVD"). null if not stated.
-  - vessel_disease_count: number of diseased vessels (1, 2, 3) derived from the diagnosis (SVD=1, DVD=2, TVD=3). null if not stated.
-  - significant_lesions: array of objects for each significant lesion:
-      { "vessel": "LCx", "segment": "mid", "finding": "total_occlusion", "stenosis_pct": [100] }
-    Empty array if no significant lesions.
-
-GENERAL RULES:
-  - Use null for any field not mentioned in the report.
-  - Do not guess or infer values not explicitly stated.
-  - If the report says "normal" for an entire vessel without segment-level detail, mark all segments as stenosis_qualifier "normal".
-  - If the report describes disease without specifying a segment (e.g., "LCx total occlusion" after "proximal normal"), assign to the most logical next segment.
-  - Preserve stenosis ranges exactly as stated. Do not round or pick a single value from a range.
-"""
-
-DECISION_SYSTEM_PROMPT = """\
-You are a clinical decision support tool based on the 2021 ACC/AHA/SCAI Guideline \
-for Coronary Artery Revascularization.
-
-A NSTEMI patient has undergone diagnostic ICA. Ad hoc PCI was NOT performed. \
-The Heart Team must now decide: complete revascularization via PCI or CABG?
-
-Use ONLY the guideline context provided below. For each recommendation cite the \
-exact section title, Class of Recommendation, and Level of Evidence.
-
-Respond ONLY with valid JSON (no markdown backticks) matching this schema:
-{
-    "recommendation": "PCI" | "CABG" | "PCI preferred" | "CABG preferred" | "Either acceptable" | "Medical management" | "Insufficient data",
-    "confidence": "strong" | "moderate" | "weak",
-    "primary_rationale": "2–3 sentence plain-language explanation",
-    "supporting_citations": [
-        {
-          "section_title": "exact title as found in the guidelines",
-          "class_of_recommendation": "I" | "IIa" | "IIb" | "III",
-          "level_of_evidence": "A" | "B-R" | "B-NR" | "C-LD" | "C-EO",
-          "guideline_text": "brief neutral summary of what the guideline states",
-          "patient_relevance": "why this specific clause applies to this patient"
-        }
-    ],
-    "conditions_favouring_pci": ["..."],
-    "conditions_favouring_cabg": ["..."],
-    "conditions_favouring_medical_management": ["..."],
-    "heart_team_considerations": "additional note for the multidisciplinary team",
-    "urgent_issues": null
-}"""
-
-
-def clean_json_response(text):
-    text = text.strip()
-    if text.startswith("```json"):
-        text = text[7:]
-    elif text.startswith("```"):
-        text = text[3:]
-    if text.endswith("```"):
-        text = text[:-3]
-    return text.strip()
-
-def build_findings_summary(findings):
-    lines = []
-    anatomy = findings.get("coronary_anatomy", {})
-    clinical = findings.get("clinical_context", {})
-    diagnosis = findings.get("angiographic_diagnosis", {})
-
-    # Clinical context
-    if clinical.get("cardiac_diagnosis"):
-        lines.append(f"Diagnosis: {clinical['cardiac_diagnosis']}")
-    if clinical.get("comorbidities"):
-        lines.append(f"Comorbidities: {', '.join(clinical['comorbidities'])}")
-    if clinical.get("valvular_disease"):
-        lines.append(f"Valvular: {clinical['valvular_disease']}")
-    if clinical.get("lv_function"):
-        lines.append(f"LV function: {clinical['lv_function']}")
-
-    lines.append(f"Coronary dominance: {anatomy.get('dominance', 'unknown')}")
-
-    # Angiographic diagnosis
-    if diagnosis.get("summary"):
-        lines.append(f"Angiographic diagnosis: {diagnosis['summary']}")
-    if diagnosis.get("vessel_disease_count") is not None:
-        lines.append(f"Vessel disease count: {diagnosis['vessel_disease_count']}")
-
-    vessels = {
-        "left_main": "Left Main",
-        "lad": "LAD",
-        "lcx": "LCx",
-        "rca": "RCA",
-    }
-
-    for key, name in vessels.items():
-        vessel = anatomy.get(key, {})
-        for segment, data in vessel.items():
-            if not isinstance(data, dict):
-                continue
-            qualifier = data.get("stenosis_qualifier", "not_described")
-            pct = data.get("stenosis_pct")
-            significant = data.get("significant", False)
-
-            if qualifier in ("normal", "not_described") and not pct and not significant:
-                continue
-
-            parts = []
-            if pct:
-                parts.append(f"{pct}% stenosis")
-            if qualifier not in ("not_described",):
-                parts.append(qualifier.replace("_", " "))
-            if significant:
-                parts.append("(significant)")
-            desc = ", ".join(parts) if parts else qualifier
-            lines.append(f"{name} {segment}: {desc}")
-
-    branches = anatomy.get("branches", {})
-    for branch, data in branches.items():
-        if not isinstance(data, dict):
-            continue
-        qualifier = data.get("stenosis_qualifier", "not_described")
-        pct = data.get("stenosis_pct")
-        significant = data.get("significant", False)
-
-        if qualifier in ("normal", "not_described") and not pct and not significant:
-            continue
-
-        parts = []
-        if pct:
-            parts.append(f"{pct}% stenosis")
-        if qualifier not in ("not_described",):
-            parts.append(qualifier.replace("_", " "))
-        if significant:
-            parts.append("(significant)")
-        desc = ", ".join(parts) if parts else qualifier
-        lines.append(f"{branch.replace('_', ' ').title()}: {desc}")
-
-    return "\n".join(lines)
-
-
-def count_diseased_vessels(findings):
-    dx_count = findings.get("angiographic_diagnosis", {}).get("vessel_disease_count")
-    if dx_count is not None:
-        return dx_count
-
-    anatomy = findings.get("coronary_anatomy", {})
-    count = 0
-    for vessel in ["left_main", "lad", "lcx", "rca"]:
-        vessel_data = anatomy.get(vessel, {})
-        for segment, data in vessel_data.items():
-            if isinstance(data, dict) and data.get("significant"):
-                count += 1
-                break
-    return count
-
-
-def retrieve_guidelines(query_text, n_results=10):
-    query_embedding = embed_model.encode(query_text).tolist()
-    results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=n_results,
-    )
-    sections = []
-    for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-        sections.append({"title": meta["title"], "content": doc})
-    return sections
-
-
-def build_decision_prompt(findings, guideline_sections):
-    findings_json = json.dumps(findings, indent=2)
-
-    guidelines_text = "\n\n---\n\n".join(
-        f"### {s['title']}\n{s['content']}" for s in guideline_sections
-    )
-
-    return f"""## Patient Clinical Findings (full structured extraction from ICA)
-
-```json
-{findings_json}
-```
-
-## Relevant Guideline Sections
-
-{guidelines_text}
-
-## Task
-
-Based on the complete clinical findings above and ONLY the guideline sections provided, produce your \
-JSON recommendation for this NSTEMI patient."""
-
-
-def render_decision(decision):
-    rec = decision.get("recommendation", "Unknown")
-    confidence = decision.get("confidence", "unknown")
-    icon = {
-        "PCI": "🟢", "PCI preferred": "🟢",
-        "CABG": "🔵", "CABG preferred": "🔵",
-        "Either acceptable": "🟡",
-        "Medical management": "🟠",
-        "Insufficient data": "🔴",
-    }.get(rec, "⚪")
-
-    st.subheader(f"{icon} Recommendation: {rec}")
-    st.markdown(f"**Confidence:** {confidence}")
-    st.markdown(f"**Rationale:** {decision.get('primary_rationale', 'N/A')}")
-
-    ht = decision.get("heart_team_considerations")
-    if ht:
-        st.info(f"**Heart Team Note:** {ht}")
-
-    urgent = decision.get("urgent_issues")
-    if urgent:
-        st.error(f"**Urgent Issues:** {urgent}")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("**Factors Favouring PCI**")
-        for item in decision.get("conditions_favouring_pci", []):
-            st.markdown(f"- {item}")
-    with col2:
-        st.markdown("**Factors Favouring CABG**")
-        for item in decision.get("conditions_favouring_cabg", []):
-            st.markdown(f"- {item}")
-    with col3:
-        st.markdown("**Factors Favouring Medical Mgmt**")
-        for item in decision.get("conditions_favouring_medical_management", []):
-            st.markdown(f"- {item}")
-
-    citations = decision.get("supporting_citations", [])
-    if citations:
-        st.subheader("Supporting Guideline Citations")
-        for i, cite in enumerate(citations, 1):
-            with st.expander(f"Citation {i}: {cite.get('section_title', 'N/A')}"):
-                st.markdown(f"**Class:** {cite.get('class_of_recommendation', '?')} "
-                            f"| **Level:** {cite.get('level_of_evidence', '?')}")
-                st.markdown(f"**Guideline:** {cite.get('guideline_text', '')}")
-                st.markdown(f"**Patient Relevance:** {cite.get('patient_relevance', '')}")
-
-
-st.markdown(
-    "<style>div[data-testid='stFileUploader'] label p {font-size: 1.4rem;}</style>",
-    unsafe_allow_html=True,
-)
-
-with open("sample_angiogram.pdf", "rb") as f:
-    st.download_button(
-        label="Download sample angiogram report for testing",
-        data=f,
-        file_name="sample_angiogram.pdf",
-        mime="application/pdf",
-    )
-
-st.divider()
-
-
-uploaded_file = st.file_uploader("Upload Coronary Angiogram (ICA/CCTA) Report To Get Started", type="pdf")
-
-if uploaded_file:
-    pdf_bytes = uploaded_file.read()
-    pdf_part = types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf")
-    prompt_part = types.Part.from_text(text=EXTRACTION_PROMPT)
-    message = types.Content(role="user", parts=[pdf_part, prompt_part])
-
-    with st.spinner(text="Extracting clinical findings... Please wait 5 to 10 seconds."):
-        response = gemini_client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=[message],
-            config=types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
-            ),
-        )
-
-    try:
-        findings = json.loads(clean_json_response(response.text))
-        st.subheader("Extracted Findings")
-        st.text(build_findings_summary(findings))
-    except json.JSONDecodeError:
-        st.error("Failed to parse findings. Raw response:")
-        st.code(response.text)
-        st.stop()
-
-    summary = build_findings_summary(findings)
-    n_vessels = count_diseased_vessels(findings)
-
-    queries = [
-        summary,
-        f"NSTEMI revascularization {n_vessels}-vessel disease",
-        "PCI versus CABG multivessel coronary artery disease",
-    ]
-
-    seen_titles = set()
-    all_sections = []
-    for q in queries:
-        for s in retrieve_guidelines(q):
-            if s["title"] not in seen_titles:
-                seen_titles.add(s["title"])
-                all_sections.append(s)
-
-    with st.spinner("Generating guideline-based recommendation... Please wait 5 to 10 seconds."):
-        decision_prompt = build_decision_prompt(findings, all_sections)
-        decision_response = gemini_client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=[
-                types.Content(role="user", parts=[
-                    types.Part.from_text(text=decision_prompt)
-                ]),
-            ],
-            config=types.GenerateContentConfig(
-                system_instruction=DECISION_SYSTEM_PROMPT,
-                temperature=0.2,
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
-            ),
-        )
-
-    try:
-        decision = json.loads(clean_json_response(decision_response.text))
-    except json.JSONDecodeError:
-        st.error("Failed to parse decision response. Raw output:")
-        st.code(decision_response.text)
-        st.stop()
-
-    st.divider()
-    render_decision(decision)
-
-    st.divider()
-    st.warning(
-        "⚠️ This tool is for clinical decision *support* only. "
-        "It does not replace clinical judgment or Heart Team discussion."
-    )
+    return StreamingResponse(stream_analysis(pdf_bytes), media_type="application/x-ndjson")
