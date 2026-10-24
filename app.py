@@ -78,7 +78,7 @@ def stream_analysis(pdf_bytes):
             if "result" in event:
                 r = event["result"]
                 event = {"result": {
-                    "findings": r.findings.model_dump(mode="json"),
+                    "findings": r.findings.model_dump(mode="json") if r.findings else None,
                     "decision": r.decision.model_dump(mode="json") if r.decision else None,
                     "message": r.message,
                     "note": r.note,

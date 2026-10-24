@@ -143,7 +143,7 @@ ASSUMPTION_NOTES = {
 
 
 class Result(NamedTuple):
-    findings: Findings
+    findings: Findings | None
     decision: Decision | None
     message: str | None
     note: str | None = None
@@ -162,9 +162,10 @@ def has_coronary_findings(findings):
 def run_steps(pdf_bytes):
     yield {"stage": "reading"}
     findings = extract.invoke({"pdf64": base64.b64encode(pdf_bytes).decode()})
-    presentation = findings.clinical_context.presentation
     if not has_coronary_findings(findings):
-        presentation = "non_coronary"
+        yield {"result": Result(None, None, SCOPE_MESSAGES["non_coronary"])}
+        return
+    presentation = findings.clinical_context.presentation
     if presentation in SCOPE_MESSAGES:
         yield {"result": Result(findings, None, SCOPE_MESSAGES[presentation])}
         return
