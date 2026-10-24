@@ -89,7 +89,7 @@ def stream_analysis(pdf_bytes):
         yield ndjson({"error": "Something went wrong while analysing the report. Please try again."})
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health():
     return {"status": "ok"}
 
