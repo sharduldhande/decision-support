@@ -222,5 +222,7 @@ class Decision(BaseModel):
     conditions_favouring_medical_management: list[str] = Field(
         description="Patient factors favouring medical management; empty only if none"
     )
-    heart_team_considerations: str = Field(description="Additional note for the multidisciplinary Heart Team")
+    next_steps: list[str] = Field(
+        description="Ordered next steps for the Heart Team, one action per item, without numbering"
+    )
     urgent_issues: str | None = Field(default=None, description="Anything needing urgent attention; null if none")
