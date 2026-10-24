@@ -9,7 +9,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
 from langsmith import traceable
 import chromadb
-from schemas import Findings, Decision
+from schemas import Findings, Decision, Segment, VESSEL_NAMES
 
 MODEL = os.environ.get("LLM_MODEL", "anthropic:claude-haiku-5-5")
 
@@ -149,11 +149,22 @@ class Result(NamedTuple):
     note: str | None = None
 
 
+def has_coronary_findings(findings):
+    anatomy = findings.coronary_anatomy
+    segments = [seg for name in VESSEL_NAMES for _, seg in getattr(anatomy, name) if isinstance(seg, Segment)]
+    segments += [seg for _, seg in anatomy.branches]
+    return findings.angiographic_diagnosis.summary is not None or any(
+        seg.stenosis_pct or seg.stenosis_qualifier != "not_described" for seg in segments
+    )
+
+
 @traceable(name="analyze_report")
 def run_steps(pdf_bytes):
     yield {"stage": "reading"}
     findings = extract.invoke({"pdf64": base64.b64encode(pdf_bytes).decode()})
     presentation = findings.clinical_context.presentation
+    if not has_coronary_findings(findings):
+        presentation = "non_coronary"
     if presentation in SCOPE_MESSAGES:
         yield {"result": Result(findings, None, SCOPE_MESSAGES[presentation])}
         return
