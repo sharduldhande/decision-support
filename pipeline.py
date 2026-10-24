@@ -69,6 +69,8 @@ def search_queries(findings):
         f"NSTEMI revascularization {n_vessels}-vessel disease",
         "PCI versus CABG multivessel coronary artery disease",
     ]
+    if any(c.upper() in ("DM", "T2DM", "T1DM") or "DIABET" in c.upper() for c in ctx.comorbidities):
+        queries.append("diabetes multivessel CAD involving LAD CABG over PCI")
     if any(l.severity == "intermediate" for l in findings.lesions):
         queries.append("intermediate stenosis physiological assessment FFR iFR to guide revascularization")
     return queries
