@@ -1,0 +1,9 @@
+# Local only: ingestion and invoke_local.py
+-r requirements.txt
+# lets boto3 read `aws login` credentials on this machine (Lambda uses its role instead)
+awscrt==0.38.0
+python-dotenv==1.2.4
+langchain-text-splitters==1.1.3
+EbookLib==0.21
+beautifulsoup4==4.15.0
+tqdm==4.70.1

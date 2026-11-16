@@ -1,0 +1,10 @@
+# Runtime: what the Lambda needs (no torch: embeddings run on Bedrock)
+langchain==1.5.0
+langchain-anthropic==1.7.10
+langchain-aws==1.9.3
+langchain-chroma==1.1.0
+chromadb==1.5.9
+pydantic==2.14.3
+httpx==0.28.1
+# 2026.10.19+ drops the compromised eMudhra root
+certifi==2026.10.23

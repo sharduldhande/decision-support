@@ -1,0 +1,20 @@
+__pycache__/
+.venv/
+.env
+
+# Terraform: provider cache, state (can contain secrets), build output
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+build/
+
+# Built by ingest.py and copied into the worker image
+app/chroma_db/
+
+# Copyrighted source text: kept locally, never published
+data/*.epub
+
+# test payloads and invoke output
+event.json
+response.json

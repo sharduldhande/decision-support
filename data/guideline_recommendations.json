@@ -1,0 +1,1136 @@
+{
+  "cir.0000000000001038.utab01.jpg": {
+    "section": "2.1. Improving Equity of Care in Revascularization",
+    "title": "Recommendation to Improve Equity of Care in Revascularization",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients who require coronary revascularization, treatment decisions should be based on clinical indication, regardless of sex or race or ethnicity, and efforts to reduce disparities of care are warranted."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab02.jpg": {
+    "section": "2.2. Shared Decision-Making and Informed Consent",
+    "title": "Recommendations for Shared Decision-Making and Informed Consent",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients undergoing revascularization, decisions should be patient centered—that is, considerate of the patient's preferences and goals, cultural beliefs, health literacy, and social determinants of health—and made in collaboration with the patient's support system."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients undergoing coronary angiography or revascularization, adequate information about benefits, risks, therapeutic consequences, and potential alternatives in the performance of percutaneous and surgical myocardial revascularization should be given, when feasible, with sufficient time for informed decision-making to improve clinical outcomes."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab03.jpg": {
+    "section": "3.1. The Heart Team",
+    "title": "Recommendation for the Heart Team",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients for whom the optimal treatment strategy is unclear, a Heart Team approach that includes representatives from interventional cardiology, cardiac surgery, and clinical cardiology is recommended to improve patient outcomes."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab04.jpg": {
+    "section": "3.2. Predicting Patient Risk of Death With CABG",
+    "title": "Recommendation for Predicting Patient Risk of Death With CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients who are being considered for CABG, calculation of the STS risk score is recommended to help stratify patient risk."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab05.jpg": {
+    "section": "4.2. Defining Coronary Artery Lesion Complexity: Calculation of the SYNTAX (Synergy Between PCI With TAXUS and Cardiac Surgery) Score",
+    "title": "Recommendation for Defining Coronary Artery Lesion Complexity: Calculation of the SYNTAX Score",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients with multivessel CAD, an assessment of CAD complexity, such as the SYNTAX score, may be useful to guide revascularization."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab06.jpg": {
+    "section": "4.3. Use of Coronary Physiology to Guide Revascularization With PCI",
+    "title": "Recommendations for the Use of Coronary Physiology to Guide Revascularization With PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with angina or an anginal equivalent, undocumented ischemia, and angiographically intermediate stenoses, the use of fractional flow reserve (FFR) or instantaneous wave-free ratio (iFR) is recommended to guide the decision to proceed with PCI."
+      },
+      {
+        "number": 2,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In stable patients with angiographically intermediate stenoses and FFR >0.80 or iFR >0.89, PCI should not be performed."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab07.jpg": {
+    "section": "4.4. Intravascular Ultrasound to Assess Lesion Severity",
+    "title": "Recommendation for Intravascular Ultrasound to Assess Lesion Severity",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with intermediate stenosis of the left main artery, intravascular ultrasound (IVUS) is reasonable to help define lesion severity."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab08.jpg": {
+    "section": "5.1. Revascularization of the Infarct Artery in Patients With STEMI",
+    "title": "Recommendations for Revascularization of the Infarct Artery in Patients With STEMI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with STEMI and ischemic symptoms for <12 hours, PCI should be performed to improve survival."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with STEMI and cardiogenic shock or hemodynamic instability, PCI or CABG (when PCI is not feasible) is indicated to improve survival, irrespective of the time delay from MI onset."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients with STEMI who have mechanical complications (eg, ventricular septal rupture, mitral valve insufficiency because of papillary muscle infarction or rupture, or free wall rupture), CABG is recommended at the time of surgery, with the goal of improving survival."
+      },
+      {
+        "number": 4,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients with STEMI and evidence of failed reperfusion after fibrinolytic therapy, rescue PCI of the infarct artery should be performed to improve clinical outcomes."
+      },
+      {
+        "number": 5,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with STEMI who are treated with fibrinolytic therapy, angiography within 3 to 24 hours with the intent to perform PCI is reasonable to improve clinical outcomes."
+      },
+      {
+        "number": 6,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with STEMI who are stable and presenting 12 to 24 hours after symptom onset, PCI is reasonable to improve clinical outcomes."
+      },
+      {
+        "number": 7,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with STEMI in whom PCI is not feasible or successful, with a large area of myocardium at risk, emergency or urgent CABG can be effective as a reperfusion modality to improve clinical outcomes."
+      },
+      {
+        "number": 8,
+        "cor": "2a",
+        "loe": "C-EO",
+        "text": "In patients with STEMI complicated by ongoing ischemia, acute severe heart failure, or life-threatening arrhythmia, PCI can be beneficial to improve clinical outcomes, irrespective of time delay from MI onset."
+      },
+      {
+        "number": 9,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In asymptomatic stable patients with STEMI who have a totally occluded infarct artery >24 hours after symptom onset and are without evidence of severe ischemia, PCI should not be performed."
+      },
+      {
+        "number": 10,
+        "cor": "3: Harm",
+        "loe": "C-EO",
+        "text": "In patients with STEMI, emergency CABG should not be performed after failed primary PCI: In the absence of ischemia or a large area of myocardium at risk, or If surgical revascularization is not feasible because of a no-reflow state or poor distal targets."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab09.jpg": {
+    "section": "5.2. Revascularization of the Non-Infarct Artery in Patients With STEMI",
+    "title": "Recommendations for Revascularization of the Non-Infarct Artery in Patients With STEMI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In selected hemodynamically stable patients with STEMI and multivessel disease, after successful primary PCI, staged PCI of a significant non-infarct artery stenosis is recommended to reduce the risk of death or MI."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "C-EO",
+        "text": "In selected patients with STEMI with complex multivessel non-infarct artery disease, after successful primary PCI, elective CABG is reasonable to reduce the risk of cardiac events."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In selected hemodynamically stable patients with STEMI and low-complexity multivessel disease, PCI of a non-infarct artery stenosis may be considered at the time of primary PCI to reduce cardiac event rates."
+      },
+      {
+        "number": 4,
+        "cor": "3: Harm",
+        "loe": "B-R",
+        "text": "In patients with STEMI complicated by cardiogenic shock, routine PCI of a non-infarct artery at the time of primary PCI should not be performed because of the higher risk of death or renal failure."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab10.jpg": {
+    "section": "6.1. Coronary Angiography and Revascularization in Patients With NSTE-ACS",
+    "title": "Recommendations for Coronary Angiography and Revascularization in Patients With NSTE-ACS",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with NSTE-ACS who are at elevated risk of recurrent ischemic events and are appropriate candidates for revascularization, an invasive strategy with the intent to proceed with revascularization is indicated to reduce cardiovascular events."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with NSTE-ACS and cardiogenic shock who are appropriate candidates for revascularization, emergency revascularization is recommended to reduce risk of death."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In appropriate patients with NSTE-ACS who have refractory angina or hemodynamic or electrical instability, an immediate invasive strategy with intent to perform revascularization is indicated to improve outcomes."
+      },
+      {
+        "number": 4,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with NSTE-ACS who are initially stabilized and are at high risk of clinical events, it is reasonable to choose an early invasive strategy (within 24 hours) over a delayed invasive strategy to improve outcomes."
+      },
+      {
+        "number": 5,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with NSTE-ACS who are initially stabilized and are at intermediate or low risk of clinical events, an invasive strategy with intent to perform revascularization is reasonable before hospital discharge to improve outcomes."
+      },
+      {
+        "number": 6,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with NSTE-ACS who have failed PCI and have ongoing ischemia, hemodynamic compromise, or threatened occlusion of an artery with substantial myocardium at risk, who are appropriate candidates for CABG, emergency CABG is reasonable."
+      },
+      {
+        "number": 7,
+        "cor": "3: Harm",
+        "loe": "B-R",
+        "text": "In patients with NSTE-ACS who present in cardiogenic shock, routine multivessel PCI of non-culprit lesions in the same setting should not be performed."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab11.jpg": {
+    "section": "7.1. Revascularization to Improve Survival in SIHD Compared With Medical Therapy",
+    "title": "Recommendations for Revascularization to Improve Survival in SIHD Compared With Medical Therapy",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with SIHD and multivessel CAD appropriate for CABG with severe left ventricular systolic dysfunction (left ventricular ejection fraction <35%), CABG is recommended to improve survival."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In selected patients with SIHD and multivessel CAD appropriate for CABG and mild-to-moderate left ventricular systolic dysfunction (ejection fraction 35%–50%), CABG (to include a left internal mammary artery [LIMA] graft to the LAD) is reasonable to improve survival."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with SIHD and significant left main stenosis, CABG is recommended to improve survival."
+      },
+      {
+        "number": 4,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In selected patients with SIHD and significant left main stenosis for whom PCI can provide equivalent revascularization to that possible with CABG, PCI is reasonable to improve survival."
+      },
+      {
+        "number": 5,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with SIHD, normal ejection fraction, significant stenosis in 3 major coronary arteries (with or without proximal LAD), and anatomy suitable for CABG, CABG may be reasonable to improve survival."
+      },
+      {
+        "number": 6,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with SIHD, normal ejection fraction, significant stenosis in 3 major coronary arteries (with or without proximal LAD), and anatomy suitable for PCI, the usefulness of PCI to improve survival is uncertain."
+      },
+      {
+        "number": 7,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with SIHD, normal left ventricular ejection fraction, and significant stenosis in the proximal LAD, the usefulness of coronary revascularization to improve survival is uncertain."
+      },
+      {
+        "number": 8,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In patients with SIHD, normal left ventricular ejection fraction, and 1- or 2-vessel CAD not involving the proximal LAD, coronary revascularization is not recommended to improve survival."
+      },
+      {
+        "number": 9,
+        "cor": "3: Harm",
+        "loe": "B-NR",
+        "text": "In patients with SIHD who have ≥1 coronary arteries that are not anatomically or functionally significant (<70% diameter of non–left main coronary artery stenosis, FFR >0.80), coronary revascularization should not be performed with the primary or sole intent to improve survival."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab12.jpg": {
+    "section": "7.2. Revascularization to Reduce Cardiovascular Events in SIHD Compared With Medical Therapy",
+    "title": "Recommendation for Revascularization to Reduce Cardiovascular Events in SIHD Compared With Medical Therapy",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with SIHD and multivessel CAD appropriate for either CABG or PCI, revascularization is reasonable to lower the risk of cardiovascular events such as spontaneous MI, unplanned urgent revascularizations, or cardiac death."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab13.jpg": {
+    "section": "7.3. Revascularization to Improve Symptoms",
+    "title": "Recommendations for Revascularization to Improve Symptoms",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with refractory angina despite medical therapy and with significant coronary artery stenoses amenable to revascularization, revascularization is recommended to improve symptoms."
+      },
+      {
+        "number": 2,
+        "cor": "3: Harm",
+        "loe": "C-LD",
+        "text": "In patients with angina but no anatomic or physiological criteria for revascularization, neither CABG nor PCI should be performed."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab14.jpg": {
+    "section": "8.1. Patients With Complex Disease",
+    "title": "Recommendations for Patients With Complex Disease",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients who require revascularization for significant left main CAD with high-complexity CAD, it is recommended to choose CABG over PCI to improve survival."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients who require revascularization for multivessel CAD with complex or diffuse CAD (eg, SYNTAX score >33), it is reasonable to choose CABG over PCI to confer a survival advantage."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab15.jpg": {
+    "section": "8.2. Patients With Diabetes",
+    "title": "Recommendations for Patients With Diabetes",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with diabetes and multivessel CAD with the involvement of the LAD, who are appropriate candidates for CABG, CABG (with a LIMA to the LAD) is recommended in preference to PCI to reduce mortality and repeat revascularizations."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with diabetes who have multivessel CAD amenable to PCI and an indication for revascularization and are poor candidates for surgery, PCI can be useful to reduce long-term ischemic outcomes."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with diabetes who have left main stenosis and low- or intermediate-complexity CAD in the rest of the coronary anatomy, PCI may be considered an alternative to CABG to reduce major adverse cardiovascular outcomes."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab16.jpg": {
+    "section": "8.3. Patients With Previous CABG",
+    "title": "Recommendations for Patients With Previous CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with previous CABG with a patent LIMA to the LAD who need repeat revascularization, if PCI is feasible, it is reasonable to choose PCI over CABG."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In patients with previous CABG and refractory angina on GDMT that is attributable to LAD disease, it is reasonable to choose CABG over PCI when an internal mammary artery (IMA) can be used as a conduit to the LAD."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients with previous CABG and complex CAD, it may be reasonable to choose CABG over PCI when an IMA can be used as a conduit to the LAD."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab17.jpg": {
+    "section": "8.4. DAPT Adherence",
+    "title": "Recommendation for DAPT Adherence",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with multivessel CAD amenable to treatment with either PCI or CABG who are unable to access, tolerate, or adhere to DAPT for the appropriate duration of treatment, CABG is reasonable in preference to PCI."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab18.jpg": {
+    "section": "9.1. Revascularization in Pregnant Patients",
+    "title": "Recommendations for Revascularization in Pregnant Patients",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In pregnant patients with STEMI not caused by spontaneous coronary artery dissection (SCAD), it is reasonable to perform primary PCI as the preferred revascularization strategy."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In pregnant patients with NSTE-ACS, an invasive strategy is reasonable if medical therapy is ineffective for the management of life-threatening complications."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab19.jpg": {
+    "section": "9.2. Revascularization in Older Patients",
+    "title": "Recommendation for Revascularization in Older Patients",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In older adults, as in all patients, the treatment strategy for CAD should be based on an individual patient's preferences, cognitive function, and life expectancy."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab20.jpg": {
+    "section": "9.3. Revascularization in Patients With Chronic Kidney Disease (CKD)",
+    "title": "Recommendations for Revascularization in Patients With CKD",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients with CKD undergoing contrast media injection for coronary angiography, measures should be taken to minimize the risk of contrast-induced acute kidney injury (AKI)."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "C-EO",
+        "text": "In patients with STEMI and CKD, coronary angiography and revascularization are recommended, with adequate measures to reduce the risk of AKI."
+      },
+      {
+        "number": 3,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In high-risk patients with NSTE-ACS and CKD, it is reasonable to perform coronary angiography and revascularization, with adequate measures to reduce the risk of AKI."
+      },
+      {
+        "number": 4,
+        "cor": "2a",
+        "loe": "C-EO",
+        "text": "In low-risk patients with NSTE-ACS and CKD, it is reasonable to weigh the risk of coronary angiography and revascularization against the potential benefit."
+      },
+      {
+        "number": 5,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In asymptomatic patients with stable CAD and CKD, routine angiography and revascularization are not recommended if there is no compelling indication."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab21.jpg": {
+    "section": "9.4. Revascularization in Patients Before Noncardiac Surgery",
+    "title": "Recommendation for Revascularization in Patients Before Noncardiac Surgery",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In patients with non–left main or noncomplex CAD who are undergoing noncardiac surgery, routine coronary revascularization is not recommended solely to reduce perioperative cardiovascular events."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab22.jpg": {
+    "section": "9.5. Revascularization in Patients to Reduce Ventricular Arrhythmias",
+    "title": "Recommendations for Revascularization in Patients to Reduce Ventricular Arrhythmias",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients with ventricular fibrillation, polymorphic ventricular tachycardia (VT), or cardiac arrest, revascularization of significant CAD is recommended to improve survival."
+      },
+      {
+        "number": 2,
+        "cor": "3: No Benefit",
+        "loe": "C-LD",
+        "text": "In patients with CAD and suspected scar-mediated sustained monomorphic VT, revascularization is not recommended for the sole purpose of preventing recurrent VT."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab23.jpg": {
+    "section": "9.6. Revascularization in Patients With SCAD",
+    "title": "Recommendations for Revascularization in Patients With SCAD",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2b",
+        "loe": "C-LD",
+        "text": "In patients with SCAD who have hemodynamic instability or ongoing ischemia despite conservative therapy, revascularization may be considered if feasible."
+      },
+      {
+        "number": 2,
+        "cor": "3: Harm",
+        "loe": "C-LD",
+        "text": "Routine revascularization for SCAD should not be performed."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab24.jpg": {
+    "section": "9.7. Revascularization in Patients With Cardiac Allografts",
+    "title": "Recommendation for Revascularization in Patients With Cardiac Allografts",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In patients with cardiac allograft vasculopathy and severe, proximal, discrete coronary lesions, revascularization with PCI is reasonable."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab25.jpg": {
+    "section": "10.1. Radial and Femoral Approaches for PCI",
+    "title": "Recommendations for Radial and Femoral Approaches for PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with ACS undergoing PCI, a radial approach is indicated in preference to a femoral approach to reduce the risk of death, vascular complications, or bleeding."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients with SIHD undergoing PCI, the radial approach is recommended to reduce access site bleeding and vascular complications."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab26.jpg": {
+    "section": "10.2. Choice of Stent Type",
+    "title": "Recommendation for Choice of Stent Type",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients undergoing PCI, DES should be used in preference to BMS to prevent restenosis, MI, or acute stent thrombosis."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab27.jpg": {
+    "section": "10.3. Use of Intravascular Imaging",
+    "title": "Recommendations for Use of Intravascular Imaging",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients undergoing coronary stent implantation, IVUS can be useful for procedural guidance, particularly in cases of left main or complex coronary artery stenting, to reduce ischemic events."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients undergoing coronary stent implantation, OCT is a reasonable alternative to IVUS for procedural guidance, except in ostial left main disease."
+      },
+      {
+        "number": 3,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In patients with stent failure, IVUS or OCT is reasonable to determine the mechanism of stent failure."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab28.jpg": {
+    "section": "10.4. Thrombectomy",
+    "title": "Recommendation for Thrombectomy",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "3: No Benefit",
+        "loe": "A",
+        "text": "In patients with STEMI, routine aspiration thrombectomy before primary PCI is not useful."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab29.jpg": {
+    "section": "10.5. Treatment of Calcified Lesions",
+    "title": "Recommendations for the Treatment of Calcified Lesions",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with fibrotic or heavily calcified lesions, plaque modification with rotational atherectomy can be useful to improve procedural success."
+      },
+      {
+        "number": 2,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients with fibrotic or heavily calcified lesions, plaque modification with orbital atherectomy, balloon atherotomy, laser angioplasty, or intracoronary lithotripsy may be considered to improve procedural success."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab30.jpg": {
+    "section": "10.6. Treatment of Saphenous Vein Graft (SVG) Disease (Previous CABG)",
+    "title": "Recommendations for Treatment of SVG Disease (Previous CABG)",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In select patients with previous CABG undergoing PCI of a SVG, the use of an embolic protection device, when technically feasible, is reasonable to decrease the risk of distal embolization."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients with previous CABG, if PCI of a diseased native coronary artery is feasible, then it is reasonable to choose PCI of the native coronary artery over PCI of the severely diseased SVG."
+      },
+      {
+        "number": 3,
+        "cor": "3: No Benefit",
+        "loe": "C-LD",
+        "text": "In patients with a chronic occlusion of a SVG, percutaneous revascularization of the SVG should not be performed."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab31.jpg": {
+    "section": "10.7. Treatment of CTO",
+    "title": "Recommendation for Treatment of CTO",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with suitable anatomy who have refractory angina on medical therapy, after treatment of non-CTO lesions, the benefit of PCI of a CTO to improve symptoms is uncertain."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab32.jpg": {
+    "section": "10.8. Treatment of Patients With Stent Restenosis",
+    "title": "Recommendations for Treatment of Patients With Stent Restenosis",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients who develop clinical in-stent restenosis (ISR) for whom repeat PCI is planned, a DES should be used to improve outcomes if anatomic factors are appropriate and the patient is able to comply with DAPT."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "C-EO",
+        "text": "In patients with symptomatic recurrent diffuse ISR with an indication for revascularization, CABG can be useful over repeat PCI to reduce recurrent events."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients who develop recurrent ISR, brachytherapy may be considered to improve symptoms."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab33.jpg": {
+    "section": "10.9. Hemodynamic Support for Complex PCI",
+    "title": "Recommendation for Hemodynamic Support in Complex PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In selected high-risk patients, elective insertion of an appropriate hemodynamic support device as an adjunct to PCI may be reasonable to prevent hemodynamic compromise during PCI."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab34.jpg": {
+    "section": "11.1. Aspirin and Oral P2Y12 Inhibitors in Patients Undergoing PCI",
+    "title": "Recommendations for Aspirin and Oral P2Y12 Inhibitors in Patients Undergoing PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients undergoing PCI, a loading dose of aspirin, followed by daily dosing, is recommended to reduce ischemic events."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with ACS undergoing PCI, a loading dose of P2Y12 inhibitor, followed by daily dosing, is recommended to reduce ischemic events."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients with SIHD undergoing PCI, a loading dose of clopidogrel, followed by daily dosing, is recommended to reduce ischemic events."
+      },
+      {
+        "number": 4,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients undergoing PCI within 24 hours after fibrinolytic therapy, a loading dose of 300 mg of clopidogrel, followed by daily dosing, is recommended to reduce ischemic events."
+      },
+      {
+        "number": 5,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with ACS undergoing PCI, it is reasonable to use ticagrelor or prasugrel in preference to clopidogrel to reduce ischemic events, including stent thrombosis."
+      },
+      {
+        "number": 6,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients <75 years of age undergoing PCI within 24 hours after fibrinolytic therapy, ticagrelor may be a reasonable alternative to clopidogrel to reduce ischemic events."
+      },
+      {
+        "number": 7,
+        "cor": "3: Harm",
+        "loe": "B-R",
+        "text": "In patients undergoing PCI who have a history of stroke or transient ischemic attack, prasugrel should not be administered."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab35.jpg": {
+    "section": "11.2. Intravenous P2Y12 Inhibitors in Patients Undergoing PCI",
+    "title": "Recommendation for Intravenous P2Y12 Inhibitors in Patients Undergoing PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients undergoing PCI who are P2Y12 inhibitor naïve, intravenous cangrelor may be reasonable to reduce periprocedural ischemic events."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab36.jpg": {
+    "section": "11.3. Intravenous Glycoprotein IIb/IIIa Inhibitors in Patients Undergoing PCI",
+    "title": "Recommendations for Intravenous Glycoprotein IIb/IIIa Inhibitors in Patients Undergoing PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "In patients with ACS undergoing PCI with large thrombus burden, no-reflow, or slow flow, intravenous glycoprotein IIb/IIIa inhibitor agents are reasonable to improve procedural success."
+      },
+      {
+        "number": 2,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In patients with SIHD undergoing PCI, the routine use of an intravenous glycoprotein IIb/IIIa inhibitor agent is not recommended."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab37.jpg": {
+    "section": "11.4. Heparin, Low-Molecular-Weight Heparin, and Bivalirudin in Patients Undergoing PCI",
+    "title": "Recommendations for Heparin, Low-Molecular-Weight Heparin, and Bivalirudin in Patients Undergoing PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "C-EO",
+        "text": "In patients undergoing PCI, administration of intravenous unfractionated heparin (UFH) is useful to reduce ischemic events."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients with heparin-induced thrombocytopenia undergoing PCI, bivalirudin or argatroban should be used to replace UFH to avoid thrombotic complications."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "A",
+        "text": "In patients undergoing PCI, bivalirudin may be a reasonable alternative to UFH to reduce bleeding."
+      },
+      {
+        "number": 4,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients treated with upstream subcutaneous enoxaparin for unstable angina or NSTE-ACS, the use of intravenous enoxaparin may be considered at the time of PCI to reduce ischemic events."
+      },
+      {
+        "number": 5,
+        "cor": "3: Harm",
+        "loe": "B-R",
+        "text": "In patients on therapeutic subcutaneous enoxaparin, in whom the last dose was administered within 12 hours of PCI, UFH should not be used for PCI and may increase bleeding."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab38.jpg": {
+    "section": "12.1. Perioperative Considerations in Patients Undergoing CABG",
+    "title": "Recommendation for Perioperative Considerations in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "For patients undergoing CABG, establishment of multidisciplinary, evidence-based perioperative management programs is recommended to optimize analgesia, minimize opioid exposure, prevent complications and to reduce time to extubation, length of stay, and health care costs."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab39.jpg": {
+    "section": "12.2. Bypass Conduits in Patients Undergoing CABG",
+    "title": "Recommendations for Bypass Conduits in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients undergoing isolated CABG, the use of a radial artery is recommended in preference to a saphenous vein conduit to graft the second most important, significantly stenosed, non–LAD vessel to improve long-term cardiac outcomes."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, an IMA, preferably the left, should be used to bypass the LAD when bypass of the LAD is indicated to improve survival and reduce recurrent ischemic events."
+      },
+      {
+        "number": 3,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, bilateral IMA (BIMA) grafting by experienced operators can be beneficial in appropriate patients to improve long-term cardiac outcomes."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab40.jpg": {
+    "section": "12.3. CABG in Patients Undergoing Other Cardiac Surgery",
+    "title": "Recommendations for CABG in Patients Undergoing Other Cardiac Surgery",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "In patients undergoing valve surgery, aortic surgery, or other cardiac operations who have significant CAD, CABG is recommended with a goal of reducing ischemic events."
+      },
+      {
+        "number": 2,
+        "cor": "2b",
+        "loe": "C-LD",
+        "text": "In patients undergoing valve surgery, aortic surgery, or other cardiac operations who have intermediate CAD, CABG may be reasonable with a goal of reducing ischemic events."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab41.jpg": {
+    "section": "12.4. Use of Epiaortic Ultrasound in Patients Undergoing CABG",
+    "title": "Recommendation for Use of Epiaortic Ultrasound in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, the routine use of epiaortic ultrasound scanning can be useful to evaluate the presence, location, and severity of plaque in the ascending aorta to reduce the incidence of atheroembolic complications."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab42.jpg": {
+    "section": "12.5. Use of Cardiopulmonary Bypass in Patients Undergoing CABG",
+    "title": "Recommendations for Use of Cardiopulmonary Bypass in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with significant calcification of the aorta, the use of techniques to avoid aortic manipulation (off-pump techniques or beating heart) is reasonable to decrease the incidence of perioperative stroke when performed by experienced surgeons."
+      },
+      {
+        "number": 2,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients with significant pulmonary disease, off-pump surgery may be reasonable to reduce perioperative risk when performed by experienced surgeons."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab43.jpg": {
+    "section": "13.1. Insulin Infusion and Other Measures to Reduce Sternal Wound Infection in Patients Undergoing CABG",
+    "title": "Recommendations for Insulin Infusion and Other Measures to Reduce Sternal Wound Infection in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG, an intraoperative continuous insulin infusion should be initiated to maintain serum glucose level <180 mg/dL to reduce sternal wound infection."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG, the use of continuous intravenous insulin to achieve and maintain an early postoperative blood glucose concentration of <180 mg/dL while avoiding hypoglycemia is indicated to reduce the incidence of adverse events, including deep sternal wound infection."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, a comprehensive approach to reduce sternal wound infection is recommended."
+      },
+      {
+        "number": 4,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG, the usefulness of continuous intravenous insulin designed to achieve a target intraoperative blood glucose concentration <140 mg/dL is uncertain."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab44.jpg": {
+    "section": "13.2. Antiplatelet Therapy in Patients Undergoing CABG",
+    "title": "Recommendations for Antiplatelet Therapy in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG who are already taking daily aspirin preoperatively, it is recommended that they continue taking aspirin until the time of surgery to reduce ischemic events."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients referred for urgent CABG, clopidogrel and ticagrelor should be discontinued for at least 24 hours before surgery to reduce major bleeding complications."
+      },
+      {
+        "number": 3,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, discontinuation of short-acting glycoprotein IIb/IIIa inhibitors (eptifibatide and tirofiban) for 4 hours and abciximab for 12 hours before surgery is recommended to reduce the risk of bleeding and transfusion."
+      },
+      {
+        "number": 4,
+        "cor": "2a",
+        "loe": "B-NR",
+        "text": "In patients undergoing elective CABG who receive P2Y12 receptor inhibitors before surgery, it is reasonable to discontinue clopidogrel for 5 days, ticagrelor for 3 days, and prasugrel for 7 days before CABG to reduce risk of major bleeding and blood product transfusion."
+      },
+      {
+        "number": 5,
+        "cor": "3: No Benefit",
+        "loe": "B-R",
+        "text": "In patients undergoing elective CABG who are not already taking aspirin, the initiation of aspirin (100–300 mg daily) in the immediate preoperative period (<24 hours before surgery) is not recommended."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab45.jpg": {
+    "section": "13.3. Beta Blockers and Amiodarone in Patients Undergoing CABG",
+    "title": "Recommendations for Beta Blockers and Amiodarone in Patients Undergoing CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG, who do not have a contraindication to beta blockers, the administration of beta blockers before surgery can be beneficial to reduce the incidence of postoperative atrial fibrillation."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients undergoing CABG, preoperative amiodarone is reasonable to reduce the incidence of postoperative atrial fibrillation."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, who do not have a contraindication to beta blockers, preoperative use of beta blockers may be effective in reducing in-hospital and 30-day mortality rates."
+      },
+      {
+        "number": 4,
+        "cor": "2b",
+        "loe": "B-NR",
+        "text": "In patients undergoing CABG, the role of preoperative beta blockers for the prevention of acute postoperative myocardial ischemia, stroke, AKI, or ventricular arrhythmia is uncertain."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab46.jpg": {
+    "section": "14.2. Dual Antiplatelet Therapy in Patients After PCI",
+    "title": "Recommendation for Dual Antiplatelet Therapy in Patients After PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "2a",
+        "loe": "A",
+        "text": "In selected patients undergoing PCI, shorter-duration DAPT (1–3 months) is reasonable, with subsequent transition to P2Y12 inhibitor monotherapy to reduce the risk of bleeding events."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab47.jpg": {
+    "section": "14.3. Antiplatelet Therapy in Patients After CABG",
+    "title": "Recommendations for Antiplatelet Therapy in Patients After CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients undergoing CABG, aspirin (100–325 mg daily) should be initiated within 6 hours postoperatively and then continued indefinitely to reduce the occurrence of SVG closure and adverse cardiovascular events."
+      },
+      {
+        "number": 2,
+        "cor": "2b",
+        "loe": "B-R",
+        "text": "In selected patients undergoing CABG, DAPT with aspirin and ticagrelor or clopidogrel for 1 year may be reasonable to improve vein graft patency compared with aspirin alone."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab48.jpg": {
+    "section": "14.4. Beta Blockers in Patients After Revascularization",
+    "title": "Recommendation for Beta Blockers in Patients After Revascularization",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "3: No Benefit",
+        "loe": "C-LD",
+        "text": "In patients with SIHD and normal left ventricular function, the routine use of chronic oral beta blockers is not beneficial to reduce cardiovascular events after complete revascularization."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab49.jpg": {
+    "section": "14.5. Beta Blockers for the Prevention of Atrial Fibrillation After CABG",
+    "title": "Recommendation for Beta Blockers for the Prevention of Atrial Fibrillation After CABG",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients after CABG, beta blockers are recommended and should be started as soon as possible to reduce the incidence or clinical sequelae of postoperative atrial fibrillation."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab50.jpg": {
+    "section": "14.6. Antiplatelet Therapy in Patients With Atrial Fibrillation on Anticoagulation After PCI",
+    "title": "Recommendations for Antiplatelet Therapy in Patients With Atrial Fibrillation on Anticoagulation After PCI",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients with atrial fibrillation who are undergoing PCI and are taking oral anticoagulant therapy, it is recommended to discontinue aspirin treatment after 1 to 4 weeks while maintaining P2Y12 inhibitors in addition to a non–vitamin K oral anticoagulant (rivaroxaban, dabigatran, apixaban, or edoxaban) or warfarin to reduce the risk of bleeding."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "B-R",
+        "text": "In patients with atrial fibrillation who are undergoing PCI, are taking oral anticoagulant therapy, and are treated with DAPT or a P2Y12 inhibitor monotherapy, it is reasonable to choose a non–vitamin K oral anticoagulant over warfarin to reduce the risk of bleeding."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab51.jpg": {
+    "section": "15.1. Cardiac Rehabilitation and Education",
+    "title": "Recommendations for Cardiac Rehabilitation and Education",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients who have undergone revascularization, a comprehensive cardiac rehabilitation program (home based or center based) should be prescribed either before hospital discharge or during the first outpatient visit to reduce deaths and hospital readmissions and improve quality of life."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "C-LD",
+        "text": "Patients who have undergone revascularization should be educated about CVD risk factors and their modification to reduce cardiovascular events."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab52.jpg": {
+    "section": "15.2. Smoking Cessation in Patients After Revascularization",
+    "title": "Recommendations for Smoking Cessation in Patients After Revascularization",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients who use tobacco and have undergone coronary revascularization, a combination of behavioral interventions plus pharmacotherapy is recommended to maximize cessation and reduce adverse cardiac events."
+      },
+      {
+        "number": 2,
+        "cor": "1",
+        "loe": "A",
+        "text": "In patients who use tobacco and have undergone coronary revascularization, smoking cessation interventions are recommended during hospitalization and should include supportive follow-up for at least 1 month after discharge to facilitate tobacco cessation and reduce morbidity and mortality."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab53.jpg": {
+    "section": "15.3. Psychological Interventions in Patients After Revascularization",
+    "title": "Recommendations for Psychological Interventions in Patients After Revascularization",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-R",
+        "text": "In patients who have undergone coronary revascularization who have symptoms of depression, anxiety, or stress, treatment with cognitive behavioral therapy, psychological counseling, and/or pharmacological interventions is beneficial to improve quality of life and cardiac outcomes."
+      },
+      {
+        "number": 2,
+        "cor": "2b",
+        "loe": "C-LD",
+        "text": "In patients who have undergone coronary revascularization, it may be reasonable to screen for depression and refer or treat when it is indicated to improve quality of life and recovery."
+      }
+    ]
+  },
+  "cir.0000000000001038.utab54.jpg": {
+    "section": "16.1. Assessment of Outcomes in Patients After Revascularization",
+    "title": "Recommendations for Assessment of Outcomes in Patients After Revascularization",
+    "recommendations": [
+      {
+        "number": 1,
+        "cor": "1",
+        "loe": "B-NR",
+        "text": "With the goal of improving patient outcomes, it is recommended that cardiac surgery and PCI programs participate in state, regional, or national clinical data registries and receive periodic reports of their risk-adjusted outcomes as a quality assessment and improvement strategy."
+      },
+      {
+        "number": 2,
+        "cor": "2a",
+        "loe": "C-LD",
+        "text": "With the goal of improving patient outcomes, it is reasonable for cardiac surgery and PCI programs to have a quality improvement program that routinely 1) reviews institutional quality programs and outcomes, 2) reviews individual operator outcomes, 3) provides peer review of difficult or complicated cases, and 4) performs random case reviews."
+      },
+      {
+        "number": 3,
+        "cor": "2b",
+        "loe": "C-EO",
+        "text": "Smaller volume cardiac surgery and PCI programs may consider affiliating with a high-volume center to improve patient care."
+      }
+    ]
+  }
+}
