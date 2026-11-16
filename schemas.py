@@ -1,8 +1,12 @@
+import json
+import re
 from typing import ClassVar, Literal
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 
 Severity = Literal["significant", "intermediate", "non_significant", "unknown"]
+
+LEAKED_PARAMETER = re.compile(r'<parameter name="(\w+)">(.*?)(?=</?parameter|</\w+>|\Z)', re.S)
 
 
 class Segment(BaseModel):
@@ -115,9 +119,10 @@ class ClinicalContext(BaseModel):
             "Clinical presentation from the report's indication or diagnosis. "
             "'posterior_MI' for posterior wall MI (PWMI), even if labelled STEMI. "
             "'ACS_unspecified' when the report says ACS without saying STEMI, NSTEMI or unstable angina. "
-            "'stable' for elective work-up: chest pain evaluation, positive stress test, known stable CAD. "
+            "'stable' only when the report explicitly describes elective work-up or known stable CAD "
+            "(chest pain evaluation, positive stress test); never infer it. "
             "'non_coronary' if the report has no coronary angiography (e.g. valve, congenital, right heart only). "
-            "'not_stated' if the report gives no indication."
+            "'not_stated' if the report gives no indication, or does not say how the patient presented."
         ),
     )
     valvular_disease: str | None = Field(
@@ -126,6 +131,22 @@ class ClinicalContext(BaseModel):
     rhythm: str | None = Field(default=None, description="Cardiac rhythm, e.g. 'SR', 'AF'. null if not stated.")
     lv_function: str | None = Field(
         default=None, description="LV function, e.g. 'MILD LV DYSFUNCTION', 'LVEF 35%'. null if not stated."
+    )
+    lvef_pct: int | None = Field(
+        default=None,
+        description=(
+            "LV ejection fraction as a number when the report states one, e.g. 35 for 'LVEF 35%'; "
+            "the lower bound for a range like '30-35%'. null if no number is stated."
+        ),
+    )
+    age: int | None = Field(default=None, description="Patient age in years. null if not stated or not exact (e.g. '>89').")
+    sex: Literal["male", "female", "not_stated"] = "not_stated"
+    prior_cabg: bool | None = Field(
+        default=None,
+        description=(
+            "true if the report describes previous CABG or existing bypass grafts (e.g. SVG, LIMA, RIMA), "
+            "including patent or occluded grafts. null if grafts are not mentioned."
+        ),
     )
 
 
@@ -155,6 +176,45 @@ class Findings(BaseModel):
     clinical_context: ClinicalContext = Field(default_factory=ClinicalContext)
     coronary_anatomy: CoronaryAnatomy = Field(default_factory=CoronaryAnatomy)
     angiographic_diagnosis: AngiographicDiagnosis = Field(default_factory=AngiographicDiagnosis)
+
+    @model_validator(mode="before")
+    @classmethod
+    def parse_json_strings(cls, value):
+        # Haiku sometimes sends a nested object (e.g. coronary_anatomy) as a JSON-encoded string,
+        # and occasionally leaks tool-call markup after it, carrying the next fields inside it:
+        # '{...}</coronary_anatomy>\n<parameter name="angiographic_diagnosis">{...}'
+        if isinstance(value, dict):
+            value = dict(value)
+            for key, v in list(value.items()):
+                text = v.lstrip() if isinstance(v, str) else ""
+                if not text.startswith("{"):
+                    continue
+                try:
+                    json.loads(text)
+                    continue
+                except ValueError:
+                    pass
+                try:
+                    obj, end = json.JSONDecoder().raw_decode(text)
+                except ValueError:
+                    continue
+                value[key] = obj
+                for name, raw in LEAKED_PARAMETER.findall(text[end:]):
+                    if name in cls.model_fields:
+                        value.setdefault(name, raw.strip())
+
+        def decode(v):
+            while isinstance(v, str) and v.lstrip()[:1] in ("{", "[", '"'):
+                try:
+                    v = json.loads(v)
+                except ValueError:
+                    return v
+            if isinstance(v, dict):
+                return {k: decode(x) for k, x in v.items()}
+            if isinstance(v, list):
+                return [decode(x) for x in v]
+            return v
+        return decode(value)
 
     @computed_field
     @property
@@ -226,3 +286,14 @@ class Decision(BaseModel):
         description="Ordered next steps for the Heart Team, one action per item, without numbering"
     )
     urgent_issues: str | None = Field(default=None, description="Anything needing urgent attention; null if none")
+
+    @field_validator("next_steps", mode="before")
+    @classmethod
+    def parse_json_list(cls, value):
+        # Haiku sometimes sends the list as a JSON-encoded string
+        while isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except ValueError:
+                break
+        return value

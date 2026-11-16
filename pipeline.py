@@ -1,5 +1,7 @@
 import os
+import re
 import base64
+from collections import defaultdict
 from typing import NamedTuple
 from functools import lru_cache
 from pathlib import Path
@@ -9,6 +11,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
 from langsmith import traceable
 import chromadb
+from pydantic import ValidationError
 from schemas import Findings, Decision, Segment, VESSEL_NAMES
 
 MODEL = os.environ.get("LLM_MODEL", "anthropic:claude-haiku-5-5")
@@ -19,6 +22,13 @@ DB_PATH = Path(__file__).parent / "chroma_db"
 COLLECTION = "guidelines_v2"
 EMBED_MODEL = "NeuML/pubmedbert-base-embeddings"
 CHUNKS_PER_QUERY = 8
+CHUNKS_PER_CONDITIONAL_QUERY = 4
+PARENTS_MAX = 8
+FULL_SECTION_MAX_CHARS = 6000   # longer sections send only the matched chunks plus their neighbours
+
+DIABETES = re.compile(r"diabet|\b(?:N?ID|T[12]\s?|TYPE\s?[12]\s?)?DM(?:\s?[12])?\b", re.I)
+WEAK_LV = re.compile(r"dysfunction|reduced|depressed|poor|impaired", re.I)
+STEMI_SECTION = re.compile(r"^5\.(\d+\.)?\s")   # section 5 is STEMI-only; STEMI cases exit before retrieval
 
 @lru_cache(maxsize=1)
 def get_retriever():
@@ -41,12 +51,16 @@ that are not explicitly stated.
 
 
 def extraction_messages(inputs):
-    return [HumanMessage([
-        {"type": "file", "base64": inputs["pdf64"], "mime_type":"application/pdf"},
-        {"type": "text", "text": EXTRACTION_PROMPT}
-    ])]
+    if "text" in inputs:
+        report = {"type": "text", "text": f"<report>\n{inputs['text']}\n</report>"}
+    else:
+        report = {"type": "file", "base64": inputs["pdf64"], "mime_type": "application/pdf"}
+    return [HumanMessage([report, {"type": "text", "text": EXTRACTION_PROMPT}])]
 
-extract = extraction_messages | model.with_structured_output(Findings)
+# Structured output occasionally comes back malformed at random; one retry almost always succeeds.
+RETRY = {"retry_if_exception_type": (ValidationError,), "stop_after_attempt": 2}
+
+extract = (extraction_messages | model.with_structured_output(Findings)).with_retry(**RETRY)
 
 
 def describe_lesion(lesion):
@@ -55,34 +69,102 @@ def describe_lesion(lesion):
     return f"{location} {pct} ({lesion.severity})"
 
 def search_queries(findings):
+    """(question, k) pairs; conditional questions fetch fewer chunks."""
     ctx = findings.clinical_context
-    summary = "; ".join(
-        [describe_lesion(l) for l in findings.lesions]
-        + ctx.comorbidities
-        + [v for v in (ctx.valvular_disease, ctx.lv_function) if v]
+    lesions = findings.lesions
+    vessels = findings.significant_vessels
+    left_main = "Left Main" in vessels
+    n_vessels = len([v for v in vessels if v != "Left Main"])
+    k, k_cond = CHUNKS_PER_QUERY, CHUNKS_PER_CONDITIONAL_QUERY
+
+    queries = [("NSTE-ACS PCI versus CABG multivessel coronary artery disease", k)]
+    if lesions:
+        queries.append(("; ".join(describe_lesion(l) for l in lesions), k))
+    if ctx.comorbidities:
+        queries.append(("; ".join(ctx.comorbidities) + " coronary revascularization", k))
+    if n_vessels:
+        queries.append((f"NSTE-ACS revascularization {n_vessels}-vessel disease", k))
+
+    if left_main:
+        queries.append(("significant left main stenosis CABG versus PCI survival anatomic complexity", k_cond))
+    if not vessels:
+        queries.append(("no anatomic or physiological criteria for revascularization should not be performed", k_cond))
+    if any(l.vessel == "LAD" and l.segment == "proximal" and l.severity == "significant" for l in lesions):
+        queries.append(("proximal LAD stenosis revascularization survival", k_cond))
+    low_ef = (ctx.lvef_pct is not None and ctx.lvef_pct <= 50) or (
+        ctx.lvef_pct is None and ctx.lv_function and WEAK_LV.search(ctx.lv_function)
     )
-    n_vessels = findings.angiographic_diagnosis.vessel_disease_count or len(
-        {l.vessel for l in findings.lesions if l.severity == "significant"}
-    )
-    queries = [
-        summary,
-        f"NSTEMI revascularization {n_vessels}-vessel disease",
-        "PCI versus CABG multivessel coronary artery disease",
-    ]
-    if any(c.upper() in ("DM", "T2DM", "T1DM") or "DIABET" in c.upper() for c in ctx.comorbidities):
-        queries.append("diabetes multivessel CAD involving LAD CABG over PCI")
-    if any(l.severity == "intermediate" for l in findings.lesions):
-        queries.append("intermediate stenosis physiological assessment FFR iFR to guide revascularization")
+    if low_ef and (n_vessels >= 2 or left_main):
+        queries.append(("multivessel CAD left ventricular systolic dysfunction ejection fraction CABG survival", k_cond))
+    if ctx.prior_cabg:
+        queries.append(("prior CABG patent LIMA graft repeat revascularization PCI", k_cond))
+    if ctx.age is not None and ctx.age >= 75:
+        queries.append(("older adults high surgical risk PCI versus CABG", k_cond))
+    if ctx.valvular_disease:
+        queries.append((f"{ctx.valvular_disease} valve surgery significant CAD concomitant CABG", k_cond))
+    if any(DIABETES.search(c) for c in ctx.comorbidities):
+        queries.append(("diabetes multivessel CAD involving LAD CABG over PCI", k_cond))
+    if any(l.severity == "intermediate" for l in lesions):
+        queries.append(("intermediate stenosis physiological assessment FFR iFR to guide revascularization", k_cond))
     return queries
 
+
+def base_title(title):
+    return title.split(" — ")[0]      # "7.1. … — Synopsis" -> "7.1. …"
+
+def strip_title(text):
+    return text.split("\n", 1)[-1]    # every stored chunk starts with its title line
+
+@lru_cache(maxsize=1)
+def guideline_index():
+    """All recommendation rows by section title, and all prose chunks by section number."""
+    data = get_retriever().vectorstore.get(include=["documents", "metadatas"])
+    recs, chunks = defaultdict(list), defaultdict(dict)
+    for text, meta in zip(data["documents"], data["metadatas"]):
+        if meta.get("kind") == "recommendation":
+            recs[meta["title"]].append(text)
+        else:
+            chunks[meta["section"]][meta["chunk"]] = text
+    return recs, chunks
+
+
 def retrieve(inputs):
-    results = get_retriever().batch(search_queries(inputs["findings"]))
-    seen, chunks = set(), []
-    for doc in (doc for docs in results for doc in docs):
-        if doc.id not in seen:
-            seen.add(doc.id)
-            chunks.append(f"### {doc.page_content}")
-    return "\n\n---\n\n".join(chunks)
+    retriever = get_retriever()
+    hits, must_keep = {}, []
+    for q, (query, k) in enumerate(search_queries(inputs["findings"])):
+        for pos, doc in enumerate(retriever.invoke(query, k=k)):
+            parent = base_title(doc.metadata["title"])
+            if STEMI_SECTION.match(parent):
+                continue
+            hit = hits.setdefault(parent, {"queries": set(), "best": pos, "sections": defaultdict(set)})
+            hit["queries"].add(q)
+            hit["best"] = min(hit["best"], pos)
+            if doc.metadata.get("kind") != "recommendation":
+                hit["sections"][doc.metadata["section"]].add(doc.metadata["chunk"])
+            if pos == 0 and parent not in must_keep:
+                must_keep.append(parent)          # every question keeps its best match
+
+    ranked = sorted(hits, key=lambda p: (-len(hits[p]["queries"]), hits[p]["best"]))
+    top = must_keep + [p for p in ranked if p not in must_keep][:max(0, PARENTS_MAX - len(must_keep))]
+
+    recs, chunks = guideline_index()
+    blocks = []
+    for parent in top:
+        if recs.get(parent):
+            blocks.append(f"### {parent} — Recommendations\n" + "\n".join(strip_title(t) for t in recs[parent]))
+        for section, hit_chunks in sorted(hits[parent]["sections"].items()):
+            pieces = chunks[section]
+            title = pieces[min(pieces)].split("\n", 1)[0]
+            if sum(map(len, pieces.values())) <= FULL_SECTION_MAX_CHARS:
+                keep = sorted(pieces)
+            else:
+                keep = sorted({c + d for c in hit_chunks for d in (-1, 0, 1)} & pieces.keys())
+            body, prev = "", None
+            for c in keep:
+                body += ("\n[...]\n" if prev is not None and c != prev + 1 else "\n") + strip_title(pieces[c])
+                prev = c
+            blocks.append(f"### {title}{body}")
+    return "\n\n---\n\n".join(blocks)
 
 
 DECISION_PROMPT = """\
@@ -100,6 +182,8 @@ Lesion severity in the findings was computed from the guideline's angiographic t
 (>=70%, or >=50% for left main, is significant; 40-69% is intermediate). Intermediate lesions have \
 not had physiological assessment (FFR/iFR). Base the anatomy on this lesion analysis. If it disagrees \
 with the report's own diagnosis line (e.g. "DVD"), say so in the rationale.
+
+Recommendations written specifically for STEMI (section 5) do not apply to this patient; do not cite them.
 """
 
 
@@ -127,7 +211,7 @@ def decision_messages(inputs):
     ]
 
 
-decide = decision_messages | model.with_structured_output(Decision)
+decide = (decision_messages | model.with_structured_output(Decision)).with_retry(**RETRY)
 
 
 SCOPE_MESSAGES = {
@@ -161,9 +245,11 @@ def has_coronary_findings(findings):
 
 
 @traceable(name="analyze_report")
-def run_steps(pdf_bytes):
+def run_steps(report, text=False):
+    """report is PDF bytes, or the report as a string when text=True."""
     yield {"stage": "reading"}
-    findings = extract.invoke({"pdf64": base64.b64encode(pdf_bytes).decode()})
+    inputs = {"text": report} if text else {"pdf64": base64.b64encode(report).decode()}
+    findings = extract.invoke(inputs)
     if not has_coronary_findings(findings):
         yield {"result": Result(None, None, SCOPE_MESSAGES["non_coronary"])}
         return
@@ -179,8 +265,8 @@ def run_steps(pdf_bytes):
     yield {"result": Result(findings, decision, None, ASSUMPTION_NOTES.get(presentation))}
 
 
-def run(pdf_bytes):
+def run(report, text=False):
     result = None
-    for event in run_steps(pdf_bytes):
+    for event in run_steps(report, text):
         result = event.get("result", result)
     return result
