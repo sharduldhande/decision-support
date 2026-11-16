@@ -242,8 +242,41 @@ function renderDecision(d) {
           el("span", {}, c.section_title)),
         el("blockquote", {}, c.guideline_text),
         el("p", { className: "why" }, el("strong", {}, "Why it applies: "), c.patient_relevance),
-      ))));
+      )),
+      d.supporting_citations.some((c) => c.class_of_recommendation || c.level_of_evidence) ? gradeKey() : null,
+    ));
   }
+}
+
+const COR_KEY = [
+  ["1", "Strong. Is recommended; the benefit far outweighs the risk."],
+  ["2a", "Moderate. Is reasonable; the benefit outweighs the risk."],
+  ["2b", "Weak. May be reasonable; the benefit is at least equal to the risk, and how useful it is isn't well established."],
+  ["3: No Benefit", "Moderate. Not recommended; it doesn't help."],
+  ["3: Harm", "Strong. Should not be done; the risk outweighs the benefit."],
+];
+const LOE_KEY = [
+  ["A", "High quality: more than one randomized trial, or meta-analyses of them"],
+  ["B-R", "Moderate quality: one or more randomized trials"],
+  ["B-NR", "Moderate quality: non-randomized, observational or registry studies"],
+  ["C-LD", "Limited data: studies with design flaws or limitations"],
+  ["C-EO", "Expert consensus, without enough clinical studies to grade"],
+];
+
+function keyTable(caption, rows) {
+  return el("table", {}, el("caption", {}, caption),
+    el("tbody", {}, ...rows.map(([k, v]) => el("tr", {}, el("th", {}, k), el("td", {}, v)))));
+}
+
+function gradeKey() {
+  return el("div", { className: "key" },
+    el("h4", {}, "What COR and LOE mean"),
+    el("p", {}, "Each recommendation in the 2021 ACC/AHA/SCAI Coronary Revascularization Guideline carries two grades from the ACC/AHA grading system. They're copied exactly from the guideline's recommendation tables. Citations from the guideline's explanatory text have no grade."),
+    el("div", { className: "cols" },
+      keyTable("COR: how strongly it's recommended", COR_KEY),
+      keyTable("LOE: how strong the evidence is", LOE_KEY)),
+    el("p", {}, "The two grades are independent. A recommendation can be strong (COR 1) and rest on expert opinion alone (LOE C-EO)."),
+  );
 }
 
 function renderFindings(f) {

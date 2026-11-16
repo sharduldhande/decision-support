@@ -139,6 +139,16 @@ h2::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;backgro
 .cite .head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-weight:800;margin-bottom:8px}
 .cite blockquote{margin:0 0 8px;padding-left:14px;border-left:1px solid var(--ink);font-size:16px}
 .cite .why{color:var(--soft);font-size:15.5px}
+.key{margin-top:20px;padding-top:14px;border-top:1px solid var(--rule);color:var(--soft);font-size:13px;line-height:1.45}
+.key h4{margin:0 0 4px;font-size:13px;font-weight:800;color:var(--ink)}
+#result .key p{margin:0 0 12px;max-width:62em}
+#result .key p:last-child{margin:12px 0 0}
+.key .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.key table{font-size:13px}
+.key caption{text-align:left;font-weight:700;color:var(--ink);padding-bottom:4px}
+.key th,.key td{padding:3px 8px 3px 0}
+.key th{width:6.5em;white-space:nowrap;color:var(--ink)}
+@media (max-width:640px){.key .cols{grid-template-columns:1fr;gap:12px}}
 table{width:100%;border-collapse:collapse;font-size:16px}
 th,td{text-align:left;vertical-align:top;padding:10px 12px;border-top:1px solid var(--rule)}
 tr:first-child>th,tr:first-child>td{border-top:0}
