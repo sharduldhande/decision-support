@@ -14,7 +14,7 @@ This branch is the serverless AWS version. The original FastAPI version that run
 
 1. **Extract**: Claude reads the PDF (scans included) into a validated Pydantic schema: segment-level stenosis, dominance, LV function, comorbidities, presentation. Lesion severity is computed in code from the guideline's thresholds (≥70%, or ≥50% for left main, is significant; 40–69% is intermediate).
 2. **Scope**: STEMI, posterior MI, stable and non-coronary reports are declined with an explanation.
-3. **Retrieve**: several queries (lesion summary, disease-specific, PCI vs. CABG, plus diabetes and FFR/iFR queries when relevant) search a Chroma index of the guideline text and its 135 graded recommendations. Results are merged and de-duplicated.
+3. **Retrieve**: rule-based queries (PCI vs. CABG, lesion summary, comorbidities, vessel count, plus left main, proximal LAD, low EF, prior CABG, age, valve disease, diabetes and FFR/iFR when relevant) and up to four model-written queries for anything the rules miss search a Chroma index of the guideline text and its 135 graded recommendations. Hits are grouped by guideline section, and the top eight sections are sent whole with all their recommendations (long sections send the matching passages and their neighbours). STEMI-only sections are left out.
 4. **Decide**: Claude picks PCI, CABG or medical therapy using only the retrieved guideline text, and returns confidence, the factors favouring each option, next steps and verbatim citations.
 
 ---

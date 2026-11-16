@@ -361,8 +361,8 @@ footer a:hover{text-decoration:underline}
     <p class="intro">Three stops between the PDF and the recommendation.</p>
     <ol class="route">
       <li><h3>Extract</h3><p>Claude reads the PDF, scans included, into a validated Pydantic schema: segment-level stenosis, dominance, LV function, comorbidities and presentation.</p></li>
-      <li><h3>Retrieve</h3><p>Queries built from those findings search a ChromaDB index of the guideline text and its 135 graded recommendations, embedded with Amazon Titan on Bedrock.</p></li>
-      <li><h3>Recommend</h3><p>The model weighs the findings against the retrieved sections and returns a strategy, a confidence level, the factors on each side and verbatim citations.</p></li>
+      <li><h3>Retrieve</h3><p>Rule-based queries built from those findings, plus a few the model writes for anything the rules miss, search a ChromaDB index of the guideline text and its 135 graded recommendations, embedded with Amazon Titan on Bedrock. Each hit pulls in its whole guideline section.</p></li>
+      <li><h3>Recommend</h3><p>The model weighs the findings against the retrieved sections and returns a strategy, a confidence level, the factors on each side and graded citations.</p></li>
     </ol>
     <div class="trust">
       <p>Lesion severity is computed in code from the guideline's thresholds rather than left to the&nbsp;model, and every citation names the guideline section it comes from, with its Class of Recommendation and Level of Evidence, so each claim can be checked against the source.</p>
