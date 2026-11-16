@@ -43,8 +43,8 @@ code{font:.88em ui-monospace,SFMono-Regular,Menlo,monospace}
 .hero{display:grid;grid-template-columns:7fr 5fr;gap:48px;align-items:center;padding-top:clamp(6px,2.6svh,28px);padding-bottom:clamp(12px,3.6svh,36px)}
 h1{font-weight:800;font-size:clamp(34px,min(4.6vw,7.2svh),64px);line-height:.98;letter-spacing:-.015em;margin:0 0 clamp(8px,1.6svh,16px)}
 h1 span{display:block;white-space:nowrap}
-.lede{font-size:clamp(15px,2.2svh,18px);line-height:1.5;color:var(--on-sign-soft);margin:0 0 clamp(6px,1.4svh,14px);max-width:36em}
-.caution{display:flex;gap:12px;align-items:flex-start;margin:0;font-size:clamp(13px,1.8svh,15px);color:var(--on-sign-soft);max-width:32em}
+.lede{font-size:clamp(15px,2.2svh,18px);line-height:1.5;color:var(--on-sign-soft);margin:0 0 clamp(6px,1.4svh,14px);max-width:40em}
+.caution{display:flex;gap:12px;align-items:flex-start;margin:0;font-size:clamp(13px,1.8svh,15px);color:var(--on-sign-soft)}
 .caution svg{flex:none;width:22px;height:22px;margin-top:1px}
 .caution strong{color:var(--on-sign)}
 .dir{background:var(--sign-deep);border-radius:6px;overflow:hidden}
@@ -79,7 +79,7 @@ main>section{border-top:9px solid var(--line)}
 #try{--line:var(--red)} #how{--line:var(--blue)} #stack{--line:var(--yellow)} #background{--line:var(--green)} #architecture{--line:var(--purple)}
 h2{display:flex;align-items:center;gap:14px;font-weight:800;font-size:36px;line-height:1.1;margin:0 0 10px}
 h2::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;background:var(--line)}
-.intro{color:var(--soft);margin:0;max-width:36em}
+.intro{color:var(--soft);margin:0;max-width:40em}
 .two{display:grid;grid-template-columns:5fr 6fr;gap:56px;align-items:start}
 
 /* try it */
@@ -164,7 +164,7 @@ th{font-weight:600;color:var(--soft);width:34%}
 .route li::before{content:"";position:absolute;left:0;top:0;width:31px;height:31px;border-radius:50%;background:var(--panel);border:7px solid var(--blue)}
 .route h3{font-weight:800;font-size:24px;margin:0 0 6px}
 .route p{margin:0;color:var(--soft)}
-.trust{margin-top:44px;max-width:44em}
+.trust{margin-top:44px;max-width:40em}
 .trust p{margin:0 0 12px}
 
 /* stack */
@@ -194,8 +194,15 @@ th{font-weight:600;color:var(--soft);width:34%}
 .terms div+div{border-left:1px solid var(--rule)}
 .terms dt{font-weight:800;font-size:22px;margin-bottom:6px}
 .terms dd{margin:0;color:var(--soft)}
-.after{margin:36px 0 0;max-width:44em}
+.after{margin:36px 0 0;max-width:40em}
 
+/* even line breaks */
+.lede,.caution,.intro,h2,.route h3,.dir small{text-wrap:balance}
+p,li,dd,blockquote{text-wrap:pretty}
+/* justified text on longer paragraphs, only where the column is wide enough */
+@media (min-width:900px){
+  .trust p,.after,.cite blockquote,.cite .why,#result .panel>p:not(.verdict){text-align:justify;-webkit-hyphens:auto;hyphens:auto;hyphenate-limit-chars:7 3 3}
+}
 footer{background:var(--sign);color:var(--on-sign-soft);font-size:15px}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:24px;padding-bottom:28px}
 footer a{color:var(--on-sign);text-decoration:none}
@@ -256,7 +263,7 @@ footer a:hover{text-decoration:underline}
     <div class="two">
       <div>
         <h2>Try it</h2>
-        <p class="intro">Run the sample report, or upload an ICA or CCTA report of your own as a PDF (up to 20 MB; scans and phone photos saved as PDF work). It covers NSTEMI and other non-ST-elevation presentations and takes 15–45 seconds.</p>
+        <p class="intro">Run the sample report, or upload an ICA or CCTA report of your own as a PDF (up to 20&nbsp;MB; scans and phone photos saved as PDF work). It covers NSTEMI and other non&#8209;ST&#8209;elevation presentations and takes 15–45&nbsp;seconds.</p>
       </div>
       <form class="panel upload" id="upload-form">
         <label class="drop" id="drop">
@@ -282,7 +289,7 @@ footer a:hover{text-decoration:underline}
 <section id="architecture">
   <div class="wrap">
     <h2>High-level architecture</h2>
-    <p class="intro">An analysis takes 15–45 seconds, so the page never waits on one request: it starts a job, uploads the PDF straight to S3, and polls until the result is ready.</p>
+    <p class="intro">An analysis takes 15–45&nbsp;seconds, so the page never waits on one request: it&nbsp;starts a job, uploads the PDF straight to S3, and polls until the result is ready.</p>
     <figure class="arch" role="img" aria-label="Lambda A starts a job: the browser sends POST /uploads through API Gateway, and it checks Turnstile, creates the job in DynamoDB and returns a presigned S3 upload link. The browser uploads the PDF to S3, and the S3 event starts Lambda B, the analysis worker, which claims the job, reads and deletes the PDF, extracts findings with Claude, embeds queries with Titan, searches the Chroma index, recommends with Claude and saves the status and result to DynamoDB. Lambda C returns the job status: the browser polls GET /jobs/{id} through API Gateway.">
     <svg viewBox="0 0 1278 420" aria-hidden="true">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9"/></marker></defs>
@@ -336,7 +343,7 @@ footer a:hover{text-decoration:underline}
       <li><h3>Recommend</h3><p>The model weighs the findings against the retrieved sections and returns a strategy, a confidence level, the factors on each side and verbatim citations.</p></li>
     </ol>
     <div class="trust">
-      <p>Lesion severity is computed in code from the guideline's thresholds rather than left to the model, and every citation is quoted word for word with its Class of Recommendation and Level of Evidence, so each claim can be checked against the source.</p>
+      <p>Lesion severity is computed in code from the guideline's thresholds rather than left to the&nbsp;model, and every citation is quoted word for word with its Class of Recommendation and Level of Evidence, so each claim can be checked against the source.</p>
     </div>
   </div>
 </section>
@@ -350,7 +357,7 @@ footer a:hover{text-decoration:underline}
       <div><dt>PCI</dt><dd>A catheter procedure that opens the artery with a balloon and a stent. Less invasive with a faster recovery; favoured for simpler anatomy.</dd></div>
       <div><dt>CABG</dt><dd>Open-heart bypass surgery that routes blood around the blockages. Generally preferred for complex multivessel or left main disease, especially with diabetes.</dd></div>
     </dl>
-    <p class="after">The guideline grades each recommendation by Class of Recommendation (how strongly it applies) and Level of Evidence (how good the data are). Applying it means weighing anatomy, diabetes, heart function and surgical risk together, which is what this tool lays out with the source text attached.</p>
+    <p class="after">The guideline grades each recommendation by Class of Recommendation (how strongly it applies) and Level of Evidence (how good the data are). Applying it means weighing anatomy, diabetes, heart function and surgical risk together, which is what this tool lays&nbsp;out with the source text attached.</p>
   </div>
 </section>
 
