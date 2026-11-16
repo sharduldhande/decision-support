@@ -99,10 +99,13 @@ def run_case(case):
     if result.decision is None:
         return {**out, "status": "out_of_scope"}
 
-    guidelines = pipeline.retrieve({"findings": result.findings})   # deterministic, local
+    guidelines = result.guidelines        # the exact text the decision was given
     cites = result.decision.supporting_citations
     out.update(
         status="ok",
+        queries=len(result.queries),
+        extra_queries=len(result.queries) - len(pipeline.search_queries(result.findings)),
+        sections=[line[4:] for line in guidelines.splitlines() if line.startswith("### ")],
         recommendation=result.decision.recommendation,
         confidence=result.decision.confidence,
         chunks=guidelines.count("### "),

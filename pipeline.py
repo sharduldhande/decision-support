@@ -9,6 +9,8 @@ from langchain.chat_models import init_chat_model
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_classic.retrievers.multi_query import MultiQueryRetriever
 from langsmith import traceable
 import chromadb
 from pydantic import ValidationError
@@ -128,10 +130,57 @@ def guideline_index():
     return recs, chunks
 
 
-def retrieve(inputs):
+EXTRA_QUERIES = os.environ.get("EXTRA_QUERIES", "1") != "0"
+EXTRA_QUERIES_MAX = 4
+
+EXTRA_QUERIES_PROMPT = PromptTemplate.from_template("""\
+You write search queries for the 2021 ACC/AHA/SCAI Guideline for Coronary Artery Revascularization.
+
+Below are a patient's extracted findings and the queries already being run. Write up to 4 additional \
+short queries (5-12 words) for patient factors in the findings that could change the choice between \
+PCI, CABG or medical therapy and that the existing queries do not already cover. Examples: kidney \
+disease or dialysis, anticoagulation or bleeding risk, inability to take dual antiplatelet therapy, \
+lesion complexity (heavy calcification, chronic total occlusion, bifurcation, diffuse disease), \
+hemodynamic instability, frailty, or other cardiac surgery needed.
+
+Use the guideline's vocabulary and only cover factors present in the findings. Write one query per \
+line, with no numbering or other text. Write nothing if nothing is left to cover.
+
+{question}""")
+
+
+def extra_queries_input(findings, existing):
+    existing = "\n".join(f"- {q}" for q in existing)
+    return (f"## Findings\n\n{findings.model_dump_json(indent=2, exclude_defaults=True)}\n\n"
+            f"## Existing queries\n\n{existing}")
+
+
+@lru_cache(maxsize=1)
+def get_multi_query():
+    return MultiQueryRetriever.from_llm(retriever=get_retriever(), llm=model, prompt=EXTRA_QUERIES_PROMPT)
+
+
+def all_queries(findings):
+    """Rule-based questions, plus a few written by the model for whatever the rules don't cover."""
+    queries = search_queries(findings)
+    if not EXTRA_QUERIES:
+        return queries
+    try:
+        text = extra_queries_input(findings, [q for q, _ in queries])
+        extra = get_multi_query().llm_chain.invoke({"question": text})
+    except Exception:
+        return queries          # retrieval still works on the rules alone
+    seen = {q.lower() for q, _ in queries}
+    extra = [q.strip() for q in extra if q.strip() and q.strip().lower() not in seen]
+    return queries + [(q, CHUNKS_PER_CONDITIONAL_QUERY) for q in extra[:EXTRA_QUERIES_MAX]]
+
+
+def retrieve(inputs, queries=None):
     retriever = get_retriever()
     hits, must_keep = {}, []
-    for q, (query, k) in enumerate(search_queries(inputs["findings"])):
+    if queries is None:
+        queries = search_queries(inputs["findings"])
+    for q, (query, k) in enumerate(queries):
         for pos, doc in enumerate(retriever.invoke(query, k=k)):
             parent = base_title(doc.metadata["title"])
             if STEMI_SECTION.match(parent):
@@ -233,6 +282,8 @@ class Result(NamedTuple):
     decision: Decision | None
     message: str | None
     note: str | None = None
+    queries: list | None = None
+    guidelines: str | None = None
 
 
 def has_coronary_findings(findings):
@@ -259,10 +310,11 @@ def run_steps(report, text=False):
         return
 
     yield {"stage": "searching"}
-    inputs = {"findings": findings, "guidelines": retrieve({"findings": findings})}
+    queries = all_queries(findings)
+    guidelines = retrieve({"findings": findings}, queries)
     yield {"stage": "writing"}
-    decision = decide.invoke(inputs)
-    yield {"result": Result(findings, decision, None, ASSUMPTION_NOTES.get(presentation))}
+    decision = decide.invoke({"findings": findings, "guidelines": guidelines})
+    yield {"result": Result(findings, decision, None, ASSUMPTION_NOTES.get(presentation), queries, guidelines)}
 
 
 def run(report, text=False):
