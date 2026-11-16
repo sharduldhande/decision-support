@@ -17,3 +17,6 @@ __pycache__/
 
 # R
 .Rhistory
+
+# MIMIC exports (never commit)
+validation/data/
