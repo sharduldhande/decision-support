@@ -14,7 +14,7 @@
 :root{
   --sign:#0d3b6e; --sign-deep:#0a2f58; --on-sign:#ffffff; --on-sign-soft:#c9dbef;
   --floor:#ebede9; --panel:#ffffff; --ink:#14212e; --soft:#4f5b67; --rule:#cfd4d8; --well:#f3f4f2;
-  --red:#d7262e; --blue:#2f7fd6; --yellow:#f2bf00; --green:#1f9a5a; --purple:#7f4fc9;
+  --red:#d7262e; --blue:#2f7fd6; --yellow:#f2bf00; --green:#1f9a5a; --purple:#7f4fc9; --orange:#e8772e;
   --focus:#14212e;
 }
 @media (prefers-color-scheme: dark){
@@ -57,13 +57,14 @@ h1 span{display:block;white-space:nowrap}
 .dir svg{width:26px;height:26px;transition:transform .2s cubic-bezier(.16,1,.3,1)}
 
 /* floor lines */
-.lines{display:grid;grid-template-rows:repeat(5,clamp(4px,.8svh,7px))}
+.lines{display:grid;grid-template-rows:repeat(6,clamp(4px,.8svh,7px))}
 .lines span{transform-origin:left;animation:draw .9s cubic-bezier(.16,1,.3,1) both}
 .lines span:nth-child(1){background:var(--red)}
-.lines span:nth-child(2){background:var(--purple);margin-right:24%;animation-delay:.08s}
-.lines span:nth-child(3){background:var(--blue);margin-right:50%;animation-delay:.16s}
-.lines span:nth-child(4){background:var(--green);margin-right:72%;animation-delay:.24s}
-.lines span:nth-child(5){background:var(--yellow);margin-right:86%;animation-delay:.32s}
+.lines span:nth-child(2){background:var(--purple);margin-right:20%;animation-delay:.06s}
+.lines span:nth-child(3){background:var(--blue);margin-right:40%;animation-delay:.12s}
+.lines span:nth-child(4){background:var(--orange);margin-right:58%;animation-delay:.18s}
+.lines span:nth-child(5){background:var(--green);margin-right:74%;animation-delay:.24s}
+.lines span:nth-child(6){background:var(--yellow);margin-right:86%;animation-delay:.30s}
 @keyframes draw{from{transform:scaleX(0)}}
 
 /* sections: each one is where its line arrives */
@@ -76,7 +77,7 @@ section{scroll-margin-top:12px;padding:56px 0 64px}
 .first>.sign>.wrap{width:100%}
 .first>.sign>.hero{flex:1;align-content:center}
 main>section{border-top:9px solid var(--line)}
-#try{--line:var(--red)} #how{--line:var(--blue)} #stack{--line:var(--yellow)} #background{--line:var(--green)} #architecture{--line:var(--purple)}
+#try{--line:var(--red)} #how{--line:var(--blue)} #stack{--line:var(--yellow)} #background{--line:var(--green)} #architecture{--line:var(--purple)} #validation{--line:var(--orange)}
 h2{display:flex;align-items:center;gap:14px;font-weight:800;font-size:36px;line-height:1.1;margin:0 0 10px}
 h2::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;background:var(--line)}
 .intro{color:var(--soft);margin:0;max-width:40em}
@@ -167,6 +168,25 @@ th{font-weight:600;color:var(--soft);width:34%}
 .trust{margin-top:44px;max-width:40em}
 .trust p{margin:0 0 12px}
 
+/* validation */
+.figures{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin:36px 0 0}
+.figures div{padding:0 24px}
+.figures div:first-child{padding-left:0}
+.figures div+div{border-left:1px solid var(--rule)}
+.figures b{display:block;font-weight:800;font-size:clamp(36px,4vw,48px);line-height:1;font-variant-numeric:tabular-nums}
+.figures span{display:block;margin-top:8px;color:var(--soft);font-size:16px}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px;align-items:start}
+.results>div{min-width:0}
+.results h3{font-weight:800;font-size:22px;margin:0 0 12px}
+.results table{font-variant-numeric:tabular-nums}
+.results th{width:auto}
+.results td.n{text-align:right;white-space:nowrap}
+.results thead th{color:var(--ink);font-weight:800;border-top:0;border-bottom:2px solid var(--ink)}
+.results thead th.n{text-align:right}
+.method p{margin:0 0 16px}
+.method p:last-child{margin:0}
+.tested{margin-top:28px;max-width:56em}
+
 /* stack */
 .stack{margin-top:28px}
 .stack th{width:32%}
@@ -221,11 +241,12 @@ footer a:hover{text-decoration:underline}
   .route{grid-template-columns:1fr;gap:28px;margin-top:28px}
   .route::before{left:11px;right:auto;top:0;bottom:0;width:9px;height:auto}
   .route li{padding:0 0 0 52px}
-  .factors,.terms{grid-template-columns:1fr}
-  .factors>div,.terms div{padding:16px 0 0}
-  .factors>div:first-child,.terms div:first-child{padding-top:0}
-  .factors>div+div,.terms div+div{border-left:0;border-top:1px solid var(--rule);margin-top:16px}
+  .factors,.terms,.figures,.results{grid-template-columns:1fr}
+  .factors>div,.terms div,.figures div{padding:16px 0 0}
+  .factors>div:first-child,.terms div:first-child,.figures div:first-child{padding-top:0}
+  .factors>div+div,.terms div+div,.figures div+div{border-left:0;border-top:1px solid var(--rule);margin-top:16px}
   th{width:40%}
+  .results th,.results td{padding:10px 8px}
 }
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
@@ -252,12 +273,13 @@ footer a:hover{text-decoration:underline}
       <a href="#try"><span class="sw" style="background:var(--red)"></span><span>Try it<small>Run the sample report or upload your own</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
       <a href="#architecture"><span class="sw" style="background:var(--purple)"></span><span>High-level architecture<small>API Gateway, S3, Lambda, DynamoDB</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
       <a href="#how"><span class="sw" style="background:var(--blue)"></span><span>How it works<small>Extract, retrieve, recommend</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
+      <a href="#validation"><span class="sw" style="background:var(--orange)"></span><span>Validation<small>491 real cath reports from MIMIC-IV</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
       <a href="#background"><span class="sw" style="background:var(--green)"></span><span>Clinical background<small>NSTEMI, PCI and CABG in brief</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
       <a href="#stack"><span class="sw" style="background:var(--yellow)"></span><span>Stack<small>LangChain, AWS Lambda, Bedrock, ChromaDB</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg></a>
     </nav>
   </div>
 </header>
-<div class="lines" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+<div class="lines" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
 <section id="try">
   <div class="wrap">
     <div class="two">
@@ -343,8 +365,36 @@ footer a:hover{text-decoration:underline}
       <li><h3>Recommend</h3><p>The model weighs the findings against the retrieved sections and returns a strategy, a confidence level, the factors on each side and verbatim citations.</p></li>
     </ol>
     <div class="trust">
-      <p>Lesion severity is computed in code from the guideline's thresholds rather than left to the&nbsp;model, and every citation is quoted word for word with its Class of Recommendation and Level of Evidence, so each claim can be checked against the source.</p>
+      <p>Lesion severity is computed in code from the guideline's thresholds rather than left to the&nbsp;model, and every citation names the guideline section it comes from, with its Class of Recommendation and Level of Evidence, so each claim can be checked against the source.</p>
     </div>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="wrap">
+    <h2>Validation</h2>
+    <p class="intro">Tested on 491 real cath findings from MIMIC-IV discharge notes: NSTEMI and unstable angina admissions at one Boston hospital, each paired with the treatment the patient actually received.</p>
+    <div class="figures">
+      <div><b>96.5%</b><span>of recommendations cite a graded guideline statement</span></div>
+      <div><b>72.2%</b><span>agree with the PCI or CABG the care team chose</span></div>
+    </div>
+    <div class="results">
+      <div class="method">
+        <p><strong>How the set was built.</strong> Admissions were selected by ICD code and labelled CABG or PCI from the procedures done in the same stay: 491 cases in total (264 CABG, 227 PCI). Discharge notes describe the treatment that followed, so only the cath findings were kept, with anything that hinted at the treatment removed.</p>
+        <p><strong>Reading the agreement number.</strong> What a care team did is not the same as what the guideline supports. The choice also depends on surgical risk, patient preference, timing and which teams and facilities are available, none of which are in a cath report.</p>
+      </div>
+      <div>
+        <h3>PCI vs CABG</h3>
+        <table class="panel">
+          <thead><tr><th>Recommended</th><th class="n">Precision</th><th class="n">Recall</th><th class="n">F1</th></tr></thead>
+          <tr><th>CABG</th><td class="n">69.0%</td><td class="n">90.2%</td><td class="n">78.2%</td></tr>
+          <tr><th>PCI</th><td class="n">80.6%</td><td class="n">50.0%</td><td class="n">61.7%</td></tr>
+          <tr><th>Macro average</th><td class="n">74.8%</td><td class="n">70.1%</td><td class="n">70.0%</td></tr>
+        </table>
+        <p class="fine" style="margin-top:12px">Scored on the 371 cases where it chose PCI or CABG. In the other 116 it answered insufficient data, either acceptable, or medical therapy. Cohen's κ 0.42.</p>
+      </div>
+    </div>
+    <p class="fine tested">These results come from the <a href="https://github.com/sharduldhande/decision-support/tree/main">original version</a> of this app, which embeds the guideline with PubMedBERT. This AWS version uses Titan embeddings and hasn't been scored on the set.</p>
   </div>
 </section>
 
